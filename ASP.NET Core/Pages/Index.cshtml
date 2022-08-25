@@ -8,7 +8,7 @@
     <div id='documenteditor_titlebar' class="e-de-ctn-title"></div>
     <div style="display:inline-flex;width:90%">
    <div class="col-lg-2 control-section" id='fieldDiv' style="width:18%;height:480px;border-left: 1px solid rgb(238, 238, 238);border-bottom: 1px solid rgb(238, 238, 238);">
-        <input type="file" id="uploadJsonButton" style="position:fixed;" excludeAcceptAllOption="True" accept=".json" onchange="onLoadJSON"/>
+        <input type="file" id="uploadJsonButton" style="position:fixed;" excludeAcceptAllOption="True" accept=".json" onchange="onLoadJSON(this)"/>
         <h5><label style="display:block;">Select Field to Insert</label></h5>
         <div id='listview'></div>
     </div>
@@ -59,8 +59,8 @@ function updateDocumentEditorSize() {
     container.resize(windowWidth, windowHeight);
   }
   function onLoadJSON(args) {
-      if (args.target.files[0]) {
-            let path = args.target.files[0];
+      if (args.files[0]) {
+            let path = args.files[0];
         }
   }
     document.addEventListener('DOMContentLoaded', function () {
