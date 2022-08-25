@@ -9,10 +9,27 @@ using WFormatType = Syncfusion.DocIO.FormatType;
 
 namespace MailMergeExample
 {
-    [Route("api/[controller]")]
+    [Route("api/DocumentEditor")]
     [ApiController]
     public class DocumentEditorController : ControllerBase
     {
+#if NET6_0
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public DocumentEditorController(IWebHostEnvironment hostingEnvironment)
+#else
+        private readonly IHostingEnvironment _hostingEnvironment;
+        public WordController(IHostingEnvironment hostingEnvironment)
+#endif
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
+        [AcceptVerbs("Post")]
+        [HttpPost]
+        [Route("Default")]
+        public string Default()
+        {
+            return "Default";
+        }
         [AcceptVerbs("Post")]
         [HttpPost]
         [Route("Import")]
@@ -52,13 +69,56 @@ namespace MailMergeExample
 
         [AcceptVerbs("Post")]
         [HttpPost]
-        [Route("MailMerge")]
-        public string MailMerge([FromBody] ExportData exportData)
+        [Route("MailMergeReport")]
+        public string MailMergeReport([FromBody] ExportData exportData)
         {
             Byte[] data = Convert.FromBase64String(exportData.documentData.Split(',')[1]);
             MemoryStream stream = new MemoryStream();
             stream.Write(data, 0, data.Length);
             stream.Position = 0;
+            string sfdtText = "";
+            if (string.IsNullOrEmpty(exportData.mergeData))
+            {
+                return sfdtText;
+            }
+            string mergeData = exportData.mergeData;
+            string basePath = _hostingEnvironment.WebRootPath;
+            StreamReader streamReader = new StreamReader(basePath + "../../Data/Employees.json");
+            mergeData = streamReader.ReadToEnd();
+            try
+            {
+                FileStream docStream = new FileStream(basePath + "../../Data/Template_Letter.doc", FileMode.Open, FileAccess.Read);
+                Syncfusion.DocIO.DLS.WordDocument document = new Syncfusion.DocIO.DLS.WordDocument(docStream, Syncfusion.DocIO.FormatType.Docx);
+                docStream.Dispose();
+                document.ExecuteMailMerge(mergeData);
+                //document.MailMerge.RemoveEmptyGroup = true;
+                //document.MailMerge.RemoveEmptyParagraphs = true;
+                //document.MailMerge.ClearFields = true;
+                //document.MailMerge.Execute(CustomerDataModel.GetAllRecords());
+                document.Save(stream, Syncfusion.DocIO.FormatType.Docx);
+            }
+            catch (Exception)
+            { }
+            Syncfusion.EJ2.DocumentEditor.WordDocument worddocument = Syncfusion.EJ2.DocumentEditor.WordDocument.Load(stream, Syncfusion.EJ2.DocumentEditor.FormatType.Docx);
+            sfdtText = Newtonsoft.Json.JsonConvert.SerializeObject(worddocument);
+            worddocument.Dispose();
+            return sfdtText;
+        }
+        [AcceptVerbs("Post")]
+        [HttpPost]
+        [Route("MailMergePreview")]
+        public string MailMergePreview([FromBody] ExportData exportData)
+        {
+            Byte[] data = Convert.FromBase64String(exportData.documentData.Split(',')[1]);
+            MemoryStream stream = new MemoryStream();
+            stream.Write(data, 0, data.Length);
+            stream.Position = 0;
+            string sfdtText = "";
+            if (string.IsNullOrEmpty(exportData.mergeData))
+            {
+                return sfdtText;
+            }
+            string basePath = _hostingEnvironment.WebRootPath;
             try
             {
                 Syncfusion.DocIO.DLS.WordDocument document = new Syncfusion.DocIO.DLS.WordDocument(stream, Syncfusion.DocIO.FormatType.Docx);
@@ -70,7 +130,6 @@ namespace MailMergeExample
             }
             catch (Exception)
             { }
-            string sfdtText = "";
             Syncfusion.EJ2.DocumentEditor.WordDocument worddocument = Syncfusion.EJ2.DocumentEditor.WordDocument.Load(stream, Syncfusion.EJ2.DocumentEditor.FormatType.Docx);
             sfdtText = Newtonsoft.Json.JsonConvert.SerializeObject(worddocument);
             worddocument.Dispose();
@@ -142,6 +201,7 @@ namespace MailMergeExample
         {
             public string fileName { get; set; }
             public string documentData { get; set; }
+            public string mergeData { get; set; }
         }
 
 

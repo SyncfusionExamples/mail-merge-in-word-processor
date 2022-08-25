@@ -273,11 +273,12 @@ function updateDocumentEditorSize() {
                      var base64String = fileReader.result;
                      var data = {
                          fileName: documenteditor.documentName + '.docx',
-                         documentData: base64String
+                         documentData: base64String,
+                         mergeData: ''
                      }
                      showHideWaitingIndicator(true)
                      var httpRequest = new XMLHttpRequest();
-                     httpRequest.open('Post',  'api/DocumentEditor/MailMerge', true);
+                     httpRequest.open('Post',  'api/DocumentEditor/MailMergeReport', true);
                      httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                      httpRequest.onreadystatechange = function () {
                          if (httpRequest.readyState === 4) {
