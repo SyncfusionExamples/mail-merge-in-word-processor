@@ -18,7 +18,7 @@ namespace MailMergeExample
         public DocumentEditorController(IWebHostEnvironment hostingEnvironment)
 #else
         private readonly IHostingEnvironment _hostingEnvironment;
-        public WordController(IHostingEnvironment hostingEnvironment)
+        public DocumentEditorController(IHostingEnvironment hostingEnvironment)
 #endif
         {
             _hostingEnvironment = hostingEnvironment;
