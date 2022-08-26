@@ -76,21 +76,21 @@ namespace MailMergeExample
             MemoryStream stream = new MemoryStream();
             stream.Write(data, 0, data.Length);
             stream.Position = 0;
-            string sfdtText = "";
-            if (string.IsNullOrEmpty(exportData.mergeData))
-            {
-                return sfdtText;
-            }
-            string mergeData = exportData.mergeData;
-            string basePath = _hostingEnvironment.WebRootPath;
-            StreamReader streamReader = new StreamReader(basePath + "../../Data/Employees.json");
-            mergeData = streamReader.ReadToEnd();
+            Syncfusion.DocIO.DLS.WordDocument document = null;
             try
             {
-                FileStream docStream = new FileStream(basePath + "../../Data/Template_Letter.doc", FileMode.Open, FileAccess.Read);
-                Syncfusion.DocIO.DLS.WordDocument document = new Syncfusion.DocIO.DLS.WordDocument(docStream, Syncfusion.DocIO.FormatType.Docx);
+                string basePath = _hostingEnvironment.WebRootPath;
+                FileStream docStream = new FileStream(basePath + "/../../Data/Template_Letter.doc", FileMode.Open, FileAccess.Read);
+                document = new Syncfusion.DocIO.DLS.WordDocument(docStream, Syncfusion.DocIO.FormatType.Docx);
                 docStream.Dispose();
-                document.ExecuteMailMerge(mergeData);
+                string mergeData = exportData.mergeData;
+                if (!string.IsNullOrEmpty(exportData.mergeData))
+                {
+                    StreamReader streamReader = new StreamReader(basePath + "/../../Data/Employees.json");
+                    mergeData = streamReader.ReadToEnd();
+                    streamReader.Dispose();
+                    document.ExecuteMailMerge(mergeData);
+                }
                 //document.MailMerge.RemoveEmptyGroup = true;
                 //document.MailMerge.RemoveEmptyParagraphs = true;
                 //document.MailMerge.ClearFields = true;
@@ -99,8 +99,8 @@ namespace MailMergeExample
             }
             catch (Exception)
             { }
-            Syncfusion.EJ2.DocumentEditor.WordDocument worddocument = Syncfusion.EJ2.DocumentEditor.WordDocument.Load(stream, Syncfusion.EJ2.DocumentEditor.FormatType.Docx);
-            sfdtText = Newtonsoft.Json.JsonConvert.SerializeObject(worddocument);
+            Syncfusion.EJ2.DocumentEditor.WordDocument worddocument = Syncfusion.EJ2.DocumentEditor.WordDocument.Load(document);
+            string sfdtText = Newtonsoft.Json.JsonConvert.SerializeObject(worddocument);
             worddocument.Dispose();
             return sfdtText;
         }
