@@ -64,73 +64,113 @@ function updateDocumentEditorSize() {
         }
   }
     document.addEventListener('DOMContentLoaded', function () {
-        
-           var listData = [
-        {
-            text: 'ProductName',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
-        },
-        {
-            text: 'ShipName',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
-        },
-        {
-            text: 'CustomerID',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
-        },
-        {
-            text: 'Quantity',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
-        },
-        {
-            text: 'UnitPrice',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
-        },
-        {
-            text: 'Discount',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
-        },
-        {
-            text: 'ShipAddress',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
-        },
-        {
-            text: 'ShipCity',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
-        },
-        {
-            text: 'ShipCountry',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
-        },
-        {
-            text: 'OrderId',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
-        },
-        {
-            text: 'OrderDate',
-            category: 'Drag or click the field to insert.',
-            htmlAttributes: { draggable: true }
+        debugger;
+         var collection;
+         var listview;
+         var ajax1 = new ej.base.Ajax("@Url.Content("~/scripts/Data/Employees.json")", 'GET', true);
+         ajax1.send().then();
+         ajax1.onSuccess = function (data) {
+             debugger;
+            let jsonData=JSON.parse(data);
+            let listData=[];
+            Object.keys(jsonData).forEach(function(key) {
+                if(listData.indexOf(key)==-1)
+  listData.push(key);
+  //collection = jsonData[key][key];
+  for(var i in jsonData[key]){
+    var keys = i;
+    var val = jsonData[key];
+    for(var j in val){
+        var sub_key = j;
+        var sub_val = val[j];
+        for(var k in sub_val){
+            if(listData.indexOf(k)==-1)
+            listData.push(k);
+            var sub_vals = sub_val[k];
+            for(var l in sub_vals){
+                var value=sub_vals[l];
+                for(var m in value){
+                    debugger;
+ if(listData.indexOf(m)==-1&& m!= "0")
+            listData.push(m);
+                }
+            }
         }
-    ];
-            // Initialize Essential JS 2 JavaScript ListView control
-            var listview = new ej.lists.ListView({
+        
+    }
+}
+   
+});
+    //let listData= Object.keys(collection[0]);
+     listview = new ej.lists.ListView({
                 //set the data to datasource property
                 dataSource: listData,
-                fields: { tooltip: 'category' },
+                fields: { tooltip: 'Drag or click the field to insert.' },
         select: onselect
             });
             //Render initialized ListView
             listview.appendTo("#listview");
+         };
+         
+    //       var listData = [
+    //    {
+    //        text: 'ProductName',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    },
+    //    {
+    //        text: 'ShipName',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    },
+    //    {
+    //        text: 'CustomerID',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    },
+    //    {
+    //        text: 'Quantity',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    },
+    //    {
+    //        text: 'UnitPrice',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    },
+    //    {
+    //        text: 'Discount',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    },
+    //    {
+    //        text: 'ShipAddress',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    },
+    //    {
+    //        text: 'ShipCity',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    },
+    //    {
+    //        text: 'ShipCountry',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    },
+    //    {
+    //        text: 'OrderId',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    },
+    //    {
+    //        text: 'OrderDate',
+    //        category: 'Drag or click the field to insert.',
+    //        htmlAttributes: { draggable: true }
+    //    }
+    //];
+            // Initialize Essential JS 2 JavaScript ListView control
+           
                function onselect(args) {
        var fieldName =args.text;
              if (fieldName !== '') {

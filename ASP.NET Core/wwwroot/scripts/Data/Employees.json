@@ -1,0 +1,277 @@
+{
+  "Employees": [
+    {
+      "FirstName": "Nancy",
+      "LastName": "Davolio",
+      "EmployeeID": "1",
+      "Extension": "5467",
+      "Address": "507 - 20th Ave. E. Apt. 2A",
+      "City": "Seattle",
+      "Country": "USA",
+      "Customers": [
+        {
+          "CustomerID": "ALFKI",
+          "EmployeeID": "1",
+          "CompanyName": "Alfreds Futterkiste",
+          "ContactName": "Maria Anders",
+          "City": "Berlin",
+          "Country": "Germany",
+          "Orders": [
+            {
+              "OrderID": "10835",
+              "CustomerID": "ALFKI",
+              "OrderDate": "1/15/1998",
+              "ShippedDate": "1/21/1998",
+              "RequiredDate": "2/12/1998"
+            },
+            {
+              "OrderID": "10952",
+              "CustomerID": "ALFKI",
+              "OrderDate": "3/16/1998",
+              "ShippedDate": "3/24/1998",
+              "RequiredDate": "4/27/1998"
+            }
+          ]
+        },
+        {
+          "CustomerID": "ANTON",
+          "EmployeeID": "1",
+          "CompanyName": "Antonio Moreno Taquería",
+          "ContactName": "Antonio Moreno",
+          "City": "México D.F.",
+          "Country": "Mexico",
+          "Orders": {
+            "OrderID": "10677",
+            "CustomerID": "ANTON",
+            "OrderDate": "9/22/1997",
+            "ShippedDate": "9/26/1997",
+            "RequiredDate": "10/20/1997"
+          }
+        },
+        {
+          "CustomerID": "AROUT",
+          "EmployeeID": "1",
+          "CompanyName": "Around the Horn",
+          "ContactName": "Thomas Hardy",
+          "City": "London",
+          "Country": "UK",
+          "Orders": [
+            {
+              "OrderID": "10453",
+              "CustomerID": "AROUT",
+              "OrderDate": "2/21/1997",
+              "ShippedDate": "2/26/1997",
+              "RequiredDate": "3/21/1997"
+            },
+            {
+              "OrderID": "10558",
+              "CustomerID": "AROUT",
+              "OrderDate": "6/4/1997",
+              "ShippedDate": "6/10/1997",
+              "RequiredDate": "7/2/1997"
+            },
+            {
+              "OrderID": "10743",
+              "CustomerID": "AROUT",
+              "OrderDate": "11/17/1997",
+              "ShippedDate": "11/21/1997",
+              "RequiredDate": "12/15/1997"
+            }
+          ]
+        },
+        {
+          "CustomerID": "BOTTM",
+          "EmployeeID": "1",
+          "CompanyName": "Bottom-Dollar Markets",
+          "ContactName": "Elizabeth Lincoln",
+          "City": "Tsawassen",
+          "Country": "Canada",
+          "Orders": [
+            {
+              "OrderID": "10975",
+              "CustomerID": "BOTTM",
+              "OrderDate": "3/25/1998",
+              "ShippedDate": "3/27/1998",
+              "RequiredDate": "4/22/1998"
+            },
+            {
+              "OrderID": "11027",
+              "CustomerID": "BOTTM",
+              "OrderDate": "4/16/1998",
+              "ShippedDate": "4/20/1998",
+              "RequiredDate": "5/14/1998"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "FirstName": "Andrew",
+      "LastName": "Fuller",
+      "EmployeeID": "2",
+      "Extension": "3457",
+      "Address": "908 W. Capital Way",
+      "City": "Tacoma",
+      "Country": "USA",
+      "Customers": [
+        {
+          "CustomerID": "BERGS",
+          "EmployeeID": "2",
+          "CompanyName": "Berglunds snabbköp",
+          "ContactName": "Christina Berglund",
+          "City": "Luleå",
+          "Country": "Sweden",
+          "Orders": {
+            "OrderID": "10280",
+            "CustomerID": "BERGS",
+            "OrderDate": "8/14/1996",
+            "ShippedDate": "9/12/1996",
+            "RequiredDate": "9/11/1996"
+          }
+        },
+        {
+          "CustomerID": "BONAP",
+          "EmployeeID": "2",
+          "CompanyName": "Bon app'",
+          "ContactName": "Laurence Lebihan",
+          "City": "Marseille",
+          "Country": "France",
+          "Orders": {
+            "OrderID": "10663",
+            "CustomerID": "BONAP",
+            "OrderDate": "9/10/1997",
+            "ShippedDate": "10/3/1997",
+            "RequiredDate": "9/24/1997"
+          }
+        },
+        {
+          "CustomerID": "ERNSH",
+          "EmployeeID": "2",
+          "CompanyName": "Ernst Handel",
+          "ContactName": "Roland Mendel",
+          "City": "Graz",
+          "Country": "Austria",
+          "Orders": [
+            {
+              "OrderID": "10368",
+              "CustomerID": "ERNSH",
+              "OrderDate": "11/29/1996",
+              "ShippedDate": "12/2/1996",
+              "RequiredDate": "12/27/1996"
+            },
+            {
+              "OrderID": "10595",
+              "CustomerID": "ERNSH",
+              "OrderDate": "7/10/1997",
+              "ShippedDate": "7/14/1997",
+              "RequiredDate": "8/7/1997"
+            },
+            {
+              "OrderID": "10990",
+              "CustomerID": "ERNSH",
+              "OrderDate": "4/1/1998",
+              "ShippedDate": "4/7/1998",
+              "RequiredDate": "5/13/1998"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "FirstName": "Margaret",
+      "LastName": "Peacock",
+      "EmployeeID": "3",
+      "Extension": "5176",
+      "Address": "4110 Old Redmond Rd.",
+      "City": "Redmond",
+      "Country": "USA",
+      "Customers": [
+        {
+          "CustomerID": "ANATR",
+          "EmployeeID": "3",
+          "CompanyName": "Ana Trujillo Emparedados y helados",
+          "ContactName": "Ana Trujillo",
+          "City": "México D.F.",
+          "Country": "Mexico",
+          "Orders": {
+            "OrderID": "10926",
+            "CustomerID": "ANATR",
+            "OrderDate": "3/4/1998",
+            "ShippedDate": "3/11/1998",
+            "RequiredDate": "4/1/1998"
+          }
+        },
+        {
+          "CustomerID": "BLONP",
+          "EmployeeID": "3",
+          "CompanyName": "Blondel père et fils",
+          "ContactName": "Frédérique Citeaux",
+          "City": "Strasbourg",
+          "Country": "France",
+          "Orders": [
+            {
+              "OrderID": "10360",
+              "CustomerID": "BLONP",
+              "OrderDate": "11/22/1996",
+              "ShippedDate": "12/2/1996",
+              "RequiredDate": "12/20/1996"
+            },
+            {
+              "OrderID": "10584",
+              "CustomerID": "BLONP",
+              "OrderDate": "6/30/1997",
+              "ShippedDate": "7/4/1997",
+              "RequiredDate": "7/28/1997"
+            },
+            {
+              "OrderID": "10628",
+              "CustomerID": "BLONP",
+              "OrderDate": "8/12/1997",
+              "ShippedDate": "8/20/1997",
+              "RequiredDate": "9/9/1997"
+            }
+          ]
+        },
+        {
+          "CustomerID": "COMMI",
+          "EmployeeID": "3",
+          "CompanyName": "Comércio Mineiro",
+          "ContactName": "Pedro Afonso",
+          "City": "São Paulo",
+          "Country": "Brazil",
+          "Orders": [
+            {
+              "OrderID": "10558",
+              "CustomerID": "COMMI",
+              "OrderDate": "6/4/1997",
+              "ShippedDate": "6/10/1997",
+              "RequiredDate": "7/2/1997"
+            },
+            {
+              "OrderID": "10542",
+              "CustomerID": "COMMI",
+              "OrderDate": "5/1/1997",
+              "ShippedDate": "5/7/1997",
+              "RequiredDate": "5/29/1997"
+            }
+          ]
+        },
+        {
+          "CustomerID": "DRACD",
+          "EmployeeID": "3",
+          "CompanyName": "Drachenblut Delikatessen",
+          "ContactName": "Sven Ottlieb",
+          "City": "Aachen",
+          "Country": "Germany",
+          "Orders": {
+            "OrderID": "10955",
+            "CustomerID": "DRACD",
+            "OrderDate": "3/16/1998",
+            "ShippedDate": "3/24/1998",
+            "RequiredDate": "4/27/1998"
+          }
+        }
+      ]
+    }
+  ]
+}
