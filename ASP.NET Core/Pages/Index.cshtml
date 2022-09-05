@@ -4,19 +4,19 @@
     ViewData["Title"] = "Home page";
 }
 
-<div id="target" style="width:98%" >
+<div id="target" style="width:98%">
     <div id='documenteditor_titlebar' class="e-de-ctn-title"></div>
     <div style="display:inline-flex;width:90%">
-   <div class="col-lg-2 control-section" id='fieldDiv' style="width:18%;height:480px;border-left: 1px solid rgb(238, 238, 238);border-bottom: 1px solid rgb(238, 238, 238);">
-        <input type="file" id="uploadJsonButton" style="position:fixed;" excludeAcceptAllOption="True" accept=".json" onchange="onLoadJSON(this)"/>
-        <h5><label style="display:block;">Select Field to Insert</label></h5>
-        <div id='listview'></div>
-    </div>
-    <div class="col-lg-10 control-section" style="width:78%;">
-        <div>
-            <ejs-documenteditorcontainer id="container" created="onCreated" height="780px"></ejs-documenteditorcontainer>
+        <div class="col-lg-2 control-section" id='fieldDiv' style="width:18%;height:480px;border-left: 1px solid rgb(238, 238, 238);border-bottom: 1px solid rgb(238, 238, 238);">
+            <input type="file" id="uploadJsonButton" style="position:fixed;" excludeAcceptAllOption="True" accept=".json" onchange="onLoadJSON(this)" />
+            <h5><label style="display:block;">Select Field to Insert</label></h5>
+            <div id='listview'></div>
         </div>
-    </div>
+        <div class="col-lg-10 control-section" style="width:78%;">
+            <div>
+                <ejs-documenteditorcontainer id="container" created="onCreated" height="780px"></ejs-documenteditorcontainer>
+            </div>
+        </div>
     </div>
     <ejs-dialog id="dialog" width="200px" target="#target" header="Merge Field" visible="false" isModal="true" showCloseIcon="true" footerTemplate="<button id='addButton' class='e-control e-btn e-primary' >OK</button><button id='cancelButton' class='e-control e-btn e-primary' >Cancel</button>">
         <e-content-template>
@@ -30,333 +30,349 @@
             <circle class="circle-path" cx="25" cy="25" r="20" fill="none" stroke-width="6" stroke-miterlimit="10" />
         </svg>
     </div>
- </div>
+</div>
 
-<script>    
-    var documenteditor;
-    var contentChanged = false;
-    var listview;
-    var dialogBox ;
-    var container
-    function onCreated() {
-    var documenteditorElement = document.getElementById("container");
-    container = documenteditorElement.ej2_instances[0];
-    documenteditor = container.documentEditor;
-     setInterval(() => {
-      updateDocumentEditorSize();
-    }, 100);
-    //Adds event listener for browser window resize event.
-    window.addEventListener('resize', onWindowResize);
-}
-    function onWindowResize() {
-    //Resizes the document editor component to fit full browser window automatically whenever the browser resized.
-    updateDocumentEditorSize();
-  }
-function updateDocumentEditorSize() {
-    //Resizes the document editor component to fit full browser window.
-    var windowWidth = document.getElementById('documenteditor_titlebar').offsetWidth - (document.getElementById('fieldDiv').offsetWidth);
-    var windowHeight = window.innerHeight - (document.getElementById('documenteditor_titlebar').offsetHeight);
-    container.resize(windowWidth, windowHeight);
-  }
-  function onLoadJSON(args) {
-      if (args.files[0]) {
-            let path = args.files[0];
-        }
-  }
-    document.addEventListener('DOMContentLoaded', function () {
-        debugger;
-         var collection;
-         var listview;
-         var ajax1 = new ej.base.Ajax("@Url.Content("~/scripts/Data/Employees.json")", 'GET', true);
-         ajax1.send().then();
-         ajax1.onSuccess = function (data) {
-             debugger;
-            let jsonData=JSON.parse(data);
-            let listData=[];
-            Object.keys(jsonData).forEach(function(key) {
-                if(listData.indexOf(key)==-1)
-  listData.push(key);
-  //collection = jsonData[key][key];
-  for(var i in jsonData[key]){
-    var keys = i;
-    var val = jsonData[key];
-    for(var j in val){
-        var sub_key = j;
-        var sub_val = val[j];
-        for(var k in sub_val){
-            if(listData.indexOf(k)==-1)
-            listData.push(k);
-            var sub_vals = sub_val[k];
-            for(var l in sub_vals){
-                var value=sub_vals[l];
-                for(var m in value){
-                    debugger;
- if(listData.indexOf(m)==-1&& m!= "0")
-            listData.push(m);
+<script>
+
+        var documenteditor;
+        var contentChanged = false;
+        var listview;
+        var dialogBox ;
+        var container
+        function onCreated() {
+        var documenteditorElement = document.getElementById("container");
+        container = documenteditorElement.ej2_instances[0];
+        documenteditor = container.documentEditor;
+         setInterval(() => {
+          updateDocumentEditorSize();
+        }, 100);
+        //Adds event listener for browser window resize event.
+        window.addEventListener('resize', onWindowResize);
+    }
+        function onWindowResize() {
+        //Resizes the document editor component to fit full browser window automatically whenever the browser resized.
+        updateDocumentEditorSize();
+      }
+    function updateDocumentEditorSize() {
+        //Resizes the document editor component to fit full browser window.
+        var windowWidth = document.getElementById('documenteditor_titlebar').offsetWidth - (document.getElementById('fieldDiv').offsetWidth);
+        var windowHeight = window.innerHeight - (document.getElementById('documenteditor_titlebar').offsetHeight);
+        container.resize(windowWidth, windowHeight);
+      }
+      function onLoadJSON(args) {
+          if (args.files[0]) {
+                let path = args.files[0];
+            }
+      }
+        document.addEventListener('DOMContentLoaded', function () {
+            debugger;
+             var collection;
+             var listview;
+             var ajax1 = new ej.base.Ajax("@Url.Content("~/scripts/Data/Employees.json")", 'GET', true);
+             ajax1.send().then();
+             ajax1.onSuccess = function (data) {
+                 debugger;
+                let jsonData=JSON.parse(data);
+                let listData=[];
+                Object.keys(jsonData).forEach(function(key) {
+                    if(listData.indexOf(key)==-1){
+      listData.push({
+        text: key,
+        category: 'Drag or click the field to insert.',
+        htmlAttributes: { draggable: true }
+    });
+                    }
+      //collection = jsonData[key][key];
+      for(var i in jsonData[key]){
+        var keys = i;
+        var val = jsonData[key];
+        for(var j in val){
+            var sub_key = j;
+            var sub_val = val[j];
+            for(var k in sub_val){
+                if(listData.indexOf(k)==-1){
+                listData.push({
+        text: k,
+        category: 'Drag or click the field to insert.',
+        htmlAttributes: { draggable: true }
+    });
+                }
+                var sub_vals = sub_val[k];
+                for(var l in sub_vals){
+                    var value=sub_vals[l];
+                    for(var m in value){
+                        debugger;
+     if(listData.indexOf(m)==-1&& m!= "0"){
+                listData.push({
+        text: m,
+        category: 'Drag or click the field to insert.',
+        htmlAttributes: { draggable: true }
+    });
+     }
+                    }
                 }
             }
+
         }
-        
     }
-}
-   
-});
-    //let listData= Object.keys(collection[0]);
-     listview = new ej.lists.ListView({
-                //set the data to datasource property
-                dataSource: listData,
-                fields: { tooltip: 'Drag or click the field to insert.' },
-        select: onselect
-            });
-            //Render initialized ListView
-            listview.appendTo("#listview");
-         };
-         
-    //       var listData = [
-    //    {
-    //        text: 'ProductName',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    },
-    //    {
-    //        text: 'ShipName',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    },
-    //    {
-    //        text: 'CustomerID',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    },
-    //    {
-    //        text: 'Quantity',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    },
-    //    {
-    //        text: 'UnitPrice',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    },
-    //    {
-    //        text: 'Discount',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    },
-    //    {
-    //        text: 'ShipAddress',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    },
-    //    {
-    //        text: 'ShipCity',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    },
-    //    {
-    //        text: 'ShipCountry',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    },
-    //    {
-    //        text: 'OrderId',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    },
-    //    {
-    //        text: 'OrderDate',
-    //        category: 'Drag or click the field to insert.',
-    //        htmlAttributes: { draggable: true }
-    //    }
-    //];
-            // Initialize Essential JS 2 JavaScript ListView control
-           
-               function onselect(args) {
-       var fieldName =args.text;
-             if (fieldName !== '') {
-                 container.documentEditor.editor.insertField('MERGEFIELD ' + fieldName + ' \\* MERGEFORMAT');
-             }
-             dialogBox.hide();
-             container.documentEditor.focusIn();
-    }
-        dialogBox = document.getElementById("dialog").ej2_instances[0];
-         var documenteditorElement = document.getElementById("container");
-         var container = documenteditorElement.ej2_instances[0];
-         container.toolbarItems = [ 'New', 'Open', 'Separator', 'Undo',
-            'Redo',
-            'Separator',
-            {
-                 prefixIcon: "sf-icon-InsertMergeField",
-                 tooltipText: "Insert Field",
-                 text: onWrapText("Insert Field"),
-                 id: "InsertField"
-            },
-            {
-             prefixIcon: "sf-icon-FinishMerge",
-             tooltipText: "Insert Field",
-             text: onWrapText("Merge Document"),
-             id: "MergeDocument"
-             },
-            'Separator',
-            'Image',
-            'Table',
-            'Hyperlink',
-            'Bookmark',
-            'TableOfContents',
-            'Separator',
-            'Header',
-            'Footer',
-            'PageSetup',
-            'PageNumber',
-            'Break',
-            'Separator',
-            'Find',
-            'Separator',
-            'Comments',
-            'TrackChanges',
-            'Separator',
-            'LocalClipboard',
-            'RestrictEditing',
-            'Separator',
-            'FormFields',
-            'UpdateFields'
-             ];
-
-         container.toolbarClick = function (args) {
-             switch (args.item.id) {
-                 case 'MergeDocument':
-                     mergeDocument();
-                     break;
-                 case 'InsertField':
-                     showInsertFielddialog();
-                     break;
-             }
-         };
-         documenteditor = container.documentEditor;
-         documenteditorElement.ej2_instances[0].serviceUrl ='api/documenteditor/';
-         documenteditor.serviceUrl ='api/documenteditor/';
-         var ajax = new ej.base.Ajax("@Url.Content("~/scripts/documenteditor/data-mailmerge.json")", 'GET', true);
-         ajax.send().then();
-         ajax.onSuccess = function (data) {
-             documenteditor.open(data);
-             documenteditor.documentName = 'Mail Merge';
-             updateDocumentTitle();
-         };
-         titleBarDiv = document.getElementById('documenteditor_titlebar');
-         initComponentAndWireEvent();
-         container.resize();
-         container.documentChange = function () {
-             updateDocumentTitle();
-             documenteditor.focusIn();
-         };
-
-         // Add drag start element for list view
-         document.getElementById("listview").addEventListener("dragstart", function (event) {
-             event.dataTransfer.setData("Text", event.target.innerText);
-             event.target.classList.add('de-drag-target');
-
-         });
-
-         // Prevent default drag over for document editor element
-         document.getElementById("container").addEventListener("dragover", function (event) {
-             event.preventDefault();
-         });
-
-
-         // Drop Event for document editor element
-         document.getElementById("container").addEventListener("drop", function (e) {
-             console.log(this);
-             var text = e.dataTransfer.getData('Text').replace(/\n/g, '').replace(/\r/g, '').replace(/\r\n/g, '');
-             documenteditor.selection.select({ x: e.offsetX, y: e.offsetY, extend: false });
-             container.documentEditor.editor.insertField('MERGEFIELD ' + text + ' \\* MERGEFORMAT');
-         });
-
-         document.addEventListener("dragend", function (event) {
-             if (event.target.classList.contains('de-drag-target')) {
-                 event.target.classList.remove('de-drag-target');
-             }
-         });
-        
-     
-       
-
-         function showInsertFielddialog() {
-             dialogBox.show();
-        }
-
-             document.getElementById('addButton').onclick = function (e) {
-                 addField();
-             };
-             document.getElementById('cancelButton').onclick = function (e) {
-                 cancelDialog();
-             };
-
-        function addField() {
-            let fieldNameTextBox = document.getElementById('inVal');
-            var fieldName = fieldNameTextBox.value;
-            if (fieldName !== '') {
-                container.documentEditor.editor.insertField('MERGEFIELD ' + fieldName + ' \\* MERGEFORMAT');
-            }
-            dialogBox.hide();
-            container.documentEditor.focusIn();
-        };
-        function cancelDialog() {
-            var dialogBox = document.getElementById("dialog").ej2_instances[0];
-            dialogBox.hide();
-        };
-
-
-         function mergeDocument() {
-             documenteditor.saveAsBlob("Docx").then(function (blob) {
-                 var fileReader = new FileReader();
-                 fileReader.onload = function () {
-                     var base64String = fileReader.result;
-                     var data = {
-                         fileName: documenteditor.documentName + '.docx',
-                         documentData: base64String
-                     }
-                     showHideWaitingIndicator(true)
-                     var httpRequest = new XMLHttpRequest();
-                     httpRequest.open('Post',  'api/DocumentEditor/MailMerge', true);
-                     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                     httpRequest.onreadystatechange = function () {
-                         if (httpRequest.readyState === 4) {
-                             if (httpRequest.status === 200 || httpRequest.status === 304) {
-                                 documenteditor.open(httpRequest.responseText);
-                             } else {
-                                 // Failed to merge document
-                                  ejs.popups.DialogUtility.alert({
-                        title: 'Information',
-                        content: 'Failed to merge document.',
-                        showCloseIcon: true,
-                        closeOnEscape: true,
-                    });
-                             }
-                             showHideWaitingIndicator(false);
-                         }
-                     };
-                     httpRequest.send(JSON.stringify(data));
-                 }
-                 fileReader.readAsDataURL(blob);
-             });
-         }
-
-
-         function showHideWaitingIndicator(show) {
-             document.getElementById("popup-overlay").style.display = show ? 'block' : 'none';
-             document.getElementById("waiting-popup").style.display = show ? 'block' : 'none';
-        }
-
-        function onWrapText(text) {
-        let content = '';
-        let index = text.lastIndexOf(' ');
-        content = text.slice(0, index);
-        text.slice(index);
-        content += '<div class="e-de-text-wrap">' + text.slice(index) + '</div>';
-        return content;
-         }
 
     });
+        //let listData= Object.keys(collection[0]);
+         listview = new ej.lists.ListView({
+                    //set the data to datasource property
+                    dataSource: listData,
+                    fields: { tooltip: 'category' },
+            select: onselect
+                });
+                //Render initialized ListView
+                listview.appendTo("#listview");
+             };
+
+        //       var listData = [
+        //    {
+        //        text: 'ProductName',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    },
+        //    {
+        //        text: 'ShipName',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    },
+        //    {
+        //        text: 'CustomerID',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    },
+        //    {
+        //        text: 'Quantity',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    },
+        //    {
+        //        text: 'UnitPrice',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    },
+        //    {
+        //        text: 'Discount',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    },
+        //    {
+        //        text: 'ShipAddress',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    },
+        //    {
+        //        text: 'ShipCity',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    },
+        //    {
+        //        text: 'ShipCountry',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    },
+        //    {
+        //        text: 'OrderId',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    },
+        //    {
+        //        text: 'OrderDate',
+        //        category: 'Drag or click the field to insert.',
+        //        htmlAttributes: { draggable: true }
+        //    }
+        //];
+                // Initialize Essential JS 2 JavaScript ListView control
+
+                   function onselect(args) {
+           var fieldName =args.text;
+                 if (fieldName !== '') {
+                     container.documentEditor.editor.insertField('MERGEFIELD ' + fieldName + ' \\* MERGEFORMAT');
+                 }
+                 dialogBox.hide();
+                 container.documentEditor.focusIn();
+        }
+            dialogBox = document.getElementById("dialog").ej2_instances[0];
+             var documenteditorElement = document.getElementById("container");
+             var container = documenteditorElement.ej2_instances[0];
+             container.toolbarItems = [ 'New', 'Open', 'Separator', 'Undo',
+                'Redo',
+                'Separator',
+                {
+                     prefixIcon: "sf-icon-InsertMergeField",
+                     tooltipText: "Insert Field",
+                     text: onWrapText("Insert Field"),
+                     id: "InsertField"
+                },
+                {
+                 prefixIcon: "sf-icon-FinishMerge",
+                 tooltipText: "Insert Field",
+                 text: onWrapText("Merge Document"),
+                 id: "MergeDocument"
+                 },
+                'Separator',
+                'Image',
+                'Table',
+                'Hyperlink',
+                'Bookmark',
+                'TableOfContents',
+                'Separator',
+                'Header',
+                'Footer',
+                'PageSetup',
+                'PageNumber',
+                'Break',
+                'Separator',
+                'Find',
+                'Separator',
+                'Comments',
+                'TrackChanges',
+                'Separator',
+                'LocalClipboard',
+                'RestrictEditing',
+                'Separator',
+                'FormFields',
+                'UpdateFields'
+                 ];
+
+             container.toolbarClick = function (args) {
+                 switch (args.item.id) {
+                     case 'MergeDocument':
+                         mergeDocument();
+                         break;
+                     case 'InsertField':
+                         showInsertFielddialog();
+                         break;
+                 }
+             };
+             documenteditor = container.documentEditor;
+             documenteditorElement.ej2_instances[0].serviceUrl ='api/documenteditor/';
+             documenteditor.serviceUrl ='api/documenteditor/';
+             var ajax = new ej.base.Ajax("@Url.Content("~/scripts/documenteditor/data-mailmerge.json")", 'GET', true);
+             ajax.send().then();
+             ajax.onSuccess = function (data) {
+                 documenteditor.open(data);
+                 documenteditor.documentName = 'Mail Merge';
+                 updateDocumentTitle();
+             };
+             titleBarDiv = document.getElementById('documenteditor_titlebar');
+             initComponentAndWireEvent();
+             container.resize();
+             container.documentChange = function () {
+                 updateDocumentTitle();
+                 documenteditor.focusIn();
+             };
+
+             // Add drag start element for list view
+             document.getElementById("listview").addEventListener("dragstart", function (event) {
+                 event.dataTransfer.setData("Text", event.target.innerText);
+                 event.target.classList.add('de-drag-target');
+
+             });
+
+             // Prevent default drag over for document editor element
+             document.getElementById("container").addEventListener("dragover", function (event) {
+                 event.preventDefault();
+             });
+
+
+             // Drop Event for document editor element
+             document.getElementById("container").addEventListener("drop", function (e) {
+                 console.log(this);
+                 var text = e.dataTransfer.getData('Text').replace(/\n/g, '').replace(/\r/g, '').replace(/\r\n/g, '');
+                 documenteditor.selection.select({ x: e.offsetX, y: e.offsetY, extend: false });
+                 container.documentEditor.editor.insertField('MERGEFIELD ' + text + ' \\* MERGEFORMAT');
+             });
+
+             document.addEventListener("dragend", function (event) {
+                 if (event.target.classList.contains('de-drag-target')) {
+                     event.target.classList.remove('de-drag-target');
+                 }
+             });
+
+
+
+
+             function showInsertFielddialog() {
+                 dialogBox.show();
+            }
+
+                 document.getElementById('addButton').onclick = function (e) {
+                     addField();
+                 };
+                 document.getElementById('cancelButton').onclick = function (e) {
+                     cancelDialog();
+                 };
+
+            function addField() {
+                let fieldNameTextBox = document.getElementById('inVal');
+                var fieldName = fieldNameTextBox.value;
+                if (fieldName !== '') {
+                    container.documentEditor.editor.insertField('MERGEFIELD ' + fieldName + ' \\* MERGEFORMAT');
+                }
+                dialogBox.hide();
+                container.documentEditor.focusIn();
+            };
+            function cancelDialog() {
+                var dialogBox = document.getElementById("dialog").ej2_instances[0];
+                dialogBox.hide();
+            };
+
+
+             function mergeDocument() {
+                 documenteditor.saveAsBlob("Docx").then(function (blob) {
+                     var fileReader = new FileReader();
+                     fileReader.onload = function () {
+                         var base64String = fileReader.result;
+                         var data = {
+                             fileName: documenteditor.documentName + '.docx',
+                             documentData: base64String
+                         }
+                         showHideWaitingIndicator(true)
+                         var httpRequest = new XMLHttpRequest();
+                         httpRequest.open('Post',  'api/DocumentEditor/MailMerge', true);
+                         httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                         httpRequest.onreadystatechange = function () {
+                             if (httpRequest.readyState === 4) {
+                                 if (httpRequest.status === 200 || httpRequest.status === 304) {
+                                     documenteditor.open(httpRequest.responseText);
+                                 } else {
+                                     // Failed to merge document
+                                      ejs.popups.DialogUtility.alert({
+                            title: 'Information',
+                            content: 'Failed to merge document.',
+                            showCloseIcon: true,
+                            closeOnEscape: true,
+                        });
+                                 }
+                                 showHideWaitingIndicator(false);
+                             }
+                         };
+                         httpRequest.send(JSON.stringify(data));
+                     }
+                     fileReader.readAsDataURL(blob);
+                 });
+             }
+
+
+             function showHideWaitingIndicator(show) {
+                 document.getElementById("popup-overlay").style.display = show ? 'block' : 'none';
+                 document.getElementById("waiting-popup").style.display = show ? 'block' : 'none';
+            }
+
+            function onWrapText(text) {
+            let content = '';
+            let index = text.lastIndexOf(' ');
+            content = text.slice(0, index);
+            text.slice(index);
+            content += '<div class="e-de-text-wrap">' + text.slice(index) + '</div>';
+            return content;
+             }
+
+        });
 </script>
 
 
