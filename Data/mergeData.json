@@ -1,0 +1,13 @@
+{
+  "MergeSettings": [
+    {
+      "ClearFields": true,
+      "RemoveEmptyParagraphs": false,
+      "RemoveEmptyGroup": false,
+      "InsertAsNewRow": false,
+      "StartAtNewPage": false,
+      "MergeType": "NestedGroup"
+      "MergeCommand": ""
+    }
+    ]
+}
