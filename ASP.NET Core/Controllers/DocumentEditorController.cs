@@ -86,22 +86,17 @@ namespace MailMergeExample
                 string mergeData = exportData.mergeData;
                 if (!string.IsNullOrEmpty(exportData.mergeData))
                 {
-                    StreamReader streamReader = new StreamReader(basePath + "/../../Data/Employees.json");
+                    StreamReader streamReader = new StreamReader(basePath + "/../../Data/mergeData.json");
                     mergeData = streamReader.ReadToEnd();
                     streamReader.Dispose();
                     document.ExecuteMailMerge(mergeData);
                 }
-                //document.MailMerge.RemoveEmptyGroup = true;
-                //document.MailMerge.RemoveEmptyParagraphs = true;
-                //document.MailMerge.ClearFields = true;
-                //document.MailMerge.Execute(CustomerDataModel.GetAllRecords());
-                document.Save(stream, Syncfusion.DocIO.FormatType.Docx);
             }
             catch (Exception)
             { }
-            Syncfusion.EJ2.DocumentEditor.WordDocument worddocument = Syncfusion.EJ2.DocumentEditor.WordDocument.Load(document);
-            string sfdtText = Newtonsoft.Json.JsonConvert.SerializeObject(worddocument);
-            worddocument.Dispose();
+            Syncfusion.EJ2.DocumentEditor.WordDocument wordDocument = Syncfusion.EJ2.DocumentEditor.WordDocument.Load(document);
+            string sfdtText = Newtonsoft.Json.JsonConvert.SerializeObject(wordDocument);
+            wordDocument.Dispose();
             return sfdtText;
         }
         [AcceptVerbs("Post")]
