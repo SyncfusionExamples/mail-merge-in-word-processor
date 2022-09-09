@@ -73,7 +73,7 @@ ViewData["Title"] = "Home page";
         debugger;
         var collection;
         var listview;
-        var ajax1 = new ej.base.Ajax("@Url.Content("~/scripts/Data / Employees.json")", 'GET', true);
+        var ajax1 = new ej.base.Ajax("@Url.Content("~/scripts/Data/Employees.json")", 'GET', true);
         ajax1.send().then();
         ajax1.onSuccess = function (data) {
             debugger;
@@ -199,7 +199,7 @@ ViewData["Title"] = "Home page";
         documenteditor = container.documentEditor;
         documenteditorElement.ej2_instances[0].serviceUrl = 'api/documenteditor/';
         documenteditor.serviceUrl = 'api/documenteditor/';
-        var ajax = new ej.base.Ajax("@Url.Content("~/scripts/documenteditor / data - mailmerge.json")", 'GET', true);
+        var ajax = new ej.base.Ajax("@Url.Content("~/scripts/documenteditor/data-mailmerge.json")", 'GET', true);
         ajax.send().then();
         ajax.onSuccess = function (data) {
             documenteditor.open(data);
