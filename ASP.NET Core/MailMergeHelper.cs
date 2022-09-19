@@ -137,7 +137,19 @@ namespace MailMergeExample
                 if (item.Value is JArray)
                     keyValue = GetData((JArray)item.Value);
                 else if (item.Value is JToken)
-                    keyValue = ((JToken)item.Value).ToObject<string>();
+                {
+                    if (((JToken)item.Value).Type == JTokenType.Object)
+                    {
+                        keyValue = GetData((JObject)item.Value);
+                        List<object> jArrayItems = new List<object>();
+                        jArrayItems.Add(keyValue);
+                        keyValue = jArrayItems;
+                    }
+                    else
+                    {
+                        keyValue = ((JToken)item.Value).ToObject<string>();
+                    }
+                }
                 dictionary.Add(item.Key, keyValue);
             }
             return dictionary;

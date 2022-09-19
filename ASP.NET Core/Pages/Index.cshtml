@@ -43,6 +43,7 @@
     var contentChanged = false;
     var listview;
     var dialogBox;
+    var jsonDataSource;
     var container
     function onCreated() {
         var documenteditorElement = document.getElementById("container");
@@ -124,6 +125,7 @@
         let jsonData = JSON.parse(data);
         let listData = [];
         let tempListData = [];
+        jsonDataSource = jsonData;
         parseChildItems(jsonData, tempListData, listData);
         var listview = new ej.lists.ListView({
             //set the data to datasource property
@@ -278,16 +280,28 @@
             var dialogBox = document.getElementById("dialog").ej2_instances[0];
             dialogBox.hide();
         };
-
         function mergeDocument() {
             documenteditor.saveAsBlob("Docx").then(function (blob) {
+                var jsonObject = {};
+                jsonObject.MergeSettings = [];
+                var mergeSetting = {};
+                mergeSetting.ClearFields = true;
+                mergeSetting.RemoveEmptyParagraphs = false;
+                mergeSetting.RemoveEmptyGroup = false;
+                mergeSetting.InsertAsNewRow = false;
+                mergeSetting.StartAtNewPage = true;
+                mergeSetting.MergeType = "NestedGroup";
+                mergeSetting.MergeCommand = "Employees";
+                mergeSetting.DataSource = jsonDataSource;
+                jsonObject.MergeSettings.push(mergeSetting);
+                var dataForMerge = JSON.stringify(jsonObject);
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
                     var base64String = fileReader.result;
                     var data = {
                         fileName: documenteditor.documentName + '.docx',
                         documentData: base64String,
-                        mergeData: ''
+                        mergeData: dataForMerge
                     }
                     showHideWaitingIndicator(true)
                     var httpRequest = new XMLHttpRequest();
