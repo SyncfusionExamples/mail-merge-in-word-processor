@@ -80,11 +80,10 @@ namespace MailMergeExample
             try
             {
                 string basePath = _hostingEnvironment.WebRootPath;
-                FileStream docStream = new FileStream(basePath + "/../../Data/Template_Letter.doc", FileMode.Open, FileAccess.Read);
-                document = new Syncfusion.DocIO.DLS.WordDocument(docStream, Syncfusion.DocIO.FormatType.Docx);
-                docStream.Dispose();
+                document = new Syncfusion.DocIO.DLS.WordDocument(stream, Syncfusion.DocIO.FormatType.Docx);
+                stream.Dispose();
                 string mergeData = exportData.mergeData;
-                if (!string.IsNullOrEmpty(exportData.mergeData))
+                // if (!string.IsNullOrEmpty(exportData.mergeData))
                 {
                     StreamReader streamReader = new StreamReader(basePath + "/../../Data/mergeData.json");
                     mergeData = streamReader.ReadToEnd();

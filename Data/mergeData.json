@@ -5,7 +5,7 @@
       "RemoveEmptyParagraphs": false,
       "RemoveEmptyGroup": false,
       "InsertAsNewRow": false,
-      "StartAtNewPage": false,
+      "StartAtNewPage": true,
       "MergeType": "NestedGroup",
       "MergeCommand": "Employees",
       "DataSource": {

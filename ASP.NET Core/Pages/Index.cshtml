@@ -1,16 +1,16 @@
 ﻿@page
 
 @{
-ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home page";
 }
 
 <div id="target" style="width:98%">
     <div id='documenteditor_titlebar' class="e-de-ctn-title"></div>
     <div style="display:inline-flex;width:90%">
         <div class="col-lg-2 control-section" id='fieldDiv'
-            style="width:18%;border-left: 1px solid rgb(238, 238, 238);border-bottom: 1px solid rgb(238, 238, 238);">
+             style="width:18%;border-left: 1px solid rgb(238, 238, 238);border-bottom: 1px solid rgb(238, 238, 238);">
             <input type="file" id="uploadJsonButton" style="position:fixed;" excludeAcceptAllOption="True"
-                accept=".json" onchange="onLoadJSON(this)" />
+                   accept=".json" onchange="onLoadJSON(this)" />
             <h5><label style="display:block;">Select Field to Insert</label></h5>
             <div id='listview'></div>
         </div>
@@ -22,8 +22,8 @@ ViewData["Title"] = "Home page";
         </div>
     </div>
     <ejs-dialog id="dialog" width="200px" target="#target" header="Merge Field" visible="false" isModal="true"
-        showCloseIcon="true"
-        footerTemplate="<button id='addButton' class='e-control e-btn e-primary' >OK</button><button id='cancelButton' class='e-control e-btn e-primary' >Cancel</button>">
+                showCloseIcon="true"
+                footerTemplate="<button id='addButton' class='e-control e-btn e-primary' >OK</button><button id='cancelButton' class='e-control e-btn e-primary' >Cancel</button>">
         <e-content-template>
             <input id='inVal' class='e-input' type='text' placeholder='Type a field to insert eg. FirstName' />
         </e-content-template>
@@ -66,83 +66,93 @@ ViewData["Title"] = "Home page";
     }
     function onLoadJSON(args) {
         if (args.files[0]) {
-            let path = args.files[0];
+            var file = args.files[0];
+            if (file) {
+                if (file.name.substr(file.name.lastIndexOf('.')) === '.json') {
+                    var fileReader_1 = new FileReader();
+                    fileReader_1.onload = function () {
+                        var fileText = fileReader_1.result;
+                        if (fileText) {
+                            loadJSON(fileText);
+                        }
+                    };
+                    fileReader_1.readAsText(file);
+                }
+            }
         }
     }
-    document.addEventListener('DOMContentLoaded', function () {
-        debugger;
-        var collection;
-        var listview;
-        var ajax1 = new ej.base.Ajax("@Url.Content("~/scripts/Data/Employees.json")", 'GET', true);
-        ajax1.send().then();
-        ajax1.onSuccess = function (data) {
-            debugger;
-            let jsonData = JSON.parse(data);
-            let listData = [];
-            let tempListData = [];
-            Object.keys(jsonData).forEach(function (key) {
-                if (tempListData.indexOf(key) == -1) {
-                    tempListData.push(key);
+    function parseChildItems(childItems, tempListData, listData) {
+        if (Array.isArray(childItems)) {
+            for (let i = 0; i < childItems.length; i++) {
+                parseObject(childItems[i], tempListData, listData);
+            }
+        }
+        else {
+            parseObject(childItems, tempListData, listData);
+        }
+    }
+    function parseObject(jsonObject, tempListData, listData) {
+        Object.keys(jsonObject).forEach(function (key) {
+            var valueType = typeof jsonObject[key];
+            var keyToAdd = key;
+            if (valueType === "object") {
+                keyToAdd = "TableStart:" + key;
+            }
+            if (tempListData.indexOf(keyToAdd) == -1) {
+                tempListData.push(keyToAdd);
+                listData.push({
+                    text: keyToAdd,
+                    category: 'Drag or click the field to insert.',
+                    htmlAttributes: { draggable: true }
+                });
+            }
+            if (valueType === "object") {
+                parseChildItems(jsonObject[key], tempListData, listData);
+                keyToAdd = "TableEnd:" + key;
+                if (tempListData.indexOf(keyToAdd) == -1) {
+                    tempListData.push(keyToAdd);
                     listData.push({
-                        text: key,
+                        text: keyToAdd,
                         category: 'Drag or click the field to insert.',
                         htmlAttributes: { draggable: true }
                     });
                 }
-                for (var i in jsonData[key]) {
-                    var keys = i;
-                    var val = jsonData[key];
-                    for (var j in val) {
-                        var sub_key = j;
-                        var sub_val = val[j];
-                        for (var k in sub_val) {
-                            if (tempListData.indexOf(k) == -1) {
-                                tempListData.push(k);
-                                listData.push({
-                                    text: k,
-                                    category: 'Drag or click the field to insert.',
-                                    htmlAttributes: { draggable: true }
-                                });
-                            }
-                            var sub_vals = sub_val[k];
-                            for (var l in sub_vals) {
-                                var value = sub_vals[l];
-                                for (var m in value) {
-                                    debugger;
-                                    if (tempListData.indexOf(m) == -1 && m != "0") {
-                                        tempListData.push(m);
-                                        listData.push({
-                                            text: m,
-                                            category: 'Drag or click the field to insert.',
-                                            htmlAttributes: { draggable: true }
-                                        });
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-
-            });
-            listview = new ej.lists.ListView({
-                //set the data to datasource property
-                dataSource: listData,
-                fields: { tooltip: 'category' },
-                select: onselect
-            });
-            //Render initialized ListView
-            listview.appendTo("#listview");
+            }
+        });
+    }
+    function loadJSON(data) {
+        let jsonData = JSON.parse(data);
+        let listData = [];
+        let tempListData = [];
+        parseChildItems(jsonData, tempListData, listData);
+        var listview = new ej.lists.ListView({
+            //set the data to datasource property
+            dataSource: listData,
+            fields: { tooltip: 'category' },
+            select: onselect
+        });
+        //Clears the old content from the div, before updating with new field names.
+        const container = document.getElementById('listview');
+        container.replaceChildren();
+        //Render initialized ListView
+        listview.appendTo("#listview");
+    }
+    function onselect(args) {
+        var fieldName = args.text;
+        if (fieldName !== '') {
+            container.documentEditor.editor.insertField('MERGEFIELD ' + fieldName + ' \\* MERGEFORMAT');
+        }
+        dialogBox.hide();
+        container.documentEditor.focusIn();
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var listview;
+        var ajax1 = new ej.base.Ajax("@Url.Content("~/scripts/Data/Employees.json")", 'GET', true);
+        ajax1.send().then();
+        ajax1.onSuccess = function (data) {
+            loadJSON(data);
         };
 
-        function onselect(args) {
-            var fieldName = args.text;
-            if (fieldName !== '') {
-                container.documentEditor.editor.insertField('MERGEFIELD ' + fieldName + ' \\* MERGEFORMAT');
-            }
-            dialogBox.hide();
-            container.documentEditor.focusIn();
-        }
         dialogBox = document.getElementById("dialog").ej2_instances[0];
         var documenteditorElement = document.getElementById("container");
         var container = documenteditorElement.ej2_instances[0];
@@ -277,7 +287,7 @@ ViewData["Title"] = "Home page";
                     var data = {
                         fileName: documenteditor.documentName + '.docx',
                         documentData: base64String,
-                         mergeData: ''
+                        mergeData: ''
                     }
                     showHideWaitingIndicator(true)
                     var httpRequest = new XMLHttpRequest();
