@@ -223,6 +223,9 @@
         container.resize();
         container.documentChange = function () {
             updateDocumentTitle();
+            //Shows the list of fields, while displaying the template.
+            const fldDiv = document.getElementById('fieldDiv');
+            fldDiv.style.display = '';
             documenteditor.focusIn();
         };
 
@@ -311,6 +314,9 @@
                         if (httpRequest.readyState === 4) {
                             if (httpRequest.status === 200 || httpRequest.status === 304) {
                                 documenteditor.open(httpRequest.responseText);
+                                //Hides the list of fields, while displaying the final report.
+                                const container = document.getElementById('fieldDiv');
+                                container.style.display = 'none';
                             } else {
                                 // Failed to merge document
                                 ejs.popups.DialogUtility.alert({
