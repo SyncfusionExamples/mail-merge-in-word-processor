@@ -108,54 +108,6 @@ namespace MailMergeExample
                 return x;
             }
         }
-        [AcceptVerbs("Post")]
-        [HttpPost]
-        [Route("MailMergeIndividualReport")]
-        public string MailMergeIndividualReport([FromBody] ExportData exportData)
-        {
-            Byte[] data = Convert.FromBase64String(exportData.documentData.Split(',')[1]);
-            MemoryStream stream = new MemoryStream();
-            stream.Write(data, 0, data.Length);
-            stream.Position = 0;
-            List<string> sfdtFiles = new List<string>();
-            if (string.IsNullOrEmpty(exportData.mergeData))
-            {
-                return "";
-            }
-            Syncfusion.DocIO.DLS.WordDocument document = new Syncfusion.DocIO.DLS.WordDocument(stream, Syncfusion.DocIO.FormatType.Docx);
-            stream.Dispose();
-            if (string.IsNullOrEmpty(exportData.recordCount))
-            {
-                string mergeData = exportData.mergeData;
-                if (!string.IsNullOrEmpty(mergeData))
-                {
-                    document.ExecuteMailMerge(mergeData);
-                }
-                Syncfusion.EJ2.DocumentEditor.WordDocument wordDocument = Syncfusion.EJ2.DocumentEditor.WordDocument.Load(document);
-                string sfdtText = Newtonsoft.Json.JsonConvert.SerializeObject(wordDocument);
-                wordDocument.Dispose();
-                return sfdtText;
-            }
-            else
-            {
-                int recordCount = int.Parse(exportData.recordCount);
-                for (int i = 0; i < recordCount; i++)
-                {
-                    Syncfusion.DocIO.DLS.WordDocument templateDocument = document.Clone();
-                    string mergeData = exportData.mergeData.Replace("\"RecordId\":\"-1\"", "\"RecordId\":\"" + i.ToString() + "\"");
-                    if (!string.IsNullOrEmpty(mergeData))
-                    {
-                        templateDocument.ExecuteMailMerge(mergeData);
-                    }
-                    Syncfusion.EJ2.DocumentEditor.WordDocument wordDocument = Syncfusion.EJ2.DocumentEditor.WordDocument.Load(templateDocument);
-                    string sfdtText = Newtonsoft.Json.JsonConvert.SerializeObject(wordDocument);
-                    sfdtFiles.Add(sfdtText);
-                    wordDocument.Dispose();
-                }
-                string x = Newtonsoft.Json.JsonConvert.SerializeObject(sfdtFiles);
-                return x;
-            }
-        }
         public class ExportData
         {
             public string fileName { get; set; }
