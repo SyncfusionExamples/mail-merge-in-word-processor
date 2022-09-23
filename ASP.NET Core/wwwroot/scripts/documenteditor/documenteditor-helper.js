@@ -96,6 +96,28 @@ function initializeTitleBar(isShareNeeded, isRtl) {
     else {
         openBtn.element.style.display = 'none';
     }
+	var divMarginStyle = 'margin:5px';
+	var mailmergeDivStyle = 'float:right;display:inline-flex;display:none';
+var mailmergeDiv=ej.base.createElement('div', { id: 'mailmergeDiv', styles:mailmergeDivStyle});
+
+	titleBarDiv.appendChild(mailmergeDiv);
+	var previousBtn=ej.base.createElement('button', { id: 'previousBtn'});
+	previousBtn.innerHTML='&laquo;';
+	mailmergeDiv.appendChild(previousBtn);
+	var innerDiv=ej.base.createElement('div', { id: 'innerDiv',styles: divMarginStyle});
+	innerDiv.innerText='Recipient1';
+	mailmergeDiv.appendChild(innerDiv);
+	var nextBtn=ej.base.createElement('button', { id: 'nextBtn'});
+	nextBtn.innerHTML='&raquo;';
+	mailmergeDiv.appendChild(nextBtn);
+	var checkBox=ej.base.createElement('input', { id: 'checkBox',type:'checkbox'});
+	checkBox.type = "checkbox";
+checkBox.name = "name";
+	mailmergeDiv.appendChild(checkBox);
+	var checkBoxDiv=ej.base.createElement('div', { id: 'checkBoxDiv',styles: divMarginStyle});
+	checkBoxDiv.innerText='Download for all recipients';
+		
+	mailmergeDiv.appendChild(checkBoxDiv);
 }
 function wireEventsInTitleBar() {
     print.element.addEventListener('click', onPrint);
