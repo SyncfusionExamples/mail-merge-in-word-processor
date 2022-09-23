@@ -44,7 +44,8 @@
     var listview;
     var dialogBox;
     var jsonDataSource;
-    var container
+    var container;
+	 var drpDownBtn;
     function onCreated() {
         var documenteditorElement = document.getElementById("container");
         container = documenteditorElement.ej2_instances[0];
@@ -54,6 +55,8 @@
         }, 100);
         //Adds event listener for browser window resize event.
         window.addEventListener('resize', onWindowResize);
+		
+		
     }
     function onWindowResize() {
         //Resizes the document editor component to fit full browser window automatically whenever the browser resized.
@@ -158,6 +161,7 @@
         dialogBox = document.getElementById("dialog").ej2_instances[0];
         var documenteditorElement = document.getElementById("container");
         var container = documenteditorElement.ej2_instances[0];
+		debugger;
         container.toolbarItems = ['New', 'Open', 'Separator', 'Undo',
             'Redo',
             'Separator',
@@ -197,12 +201,28 @@
             'FormFields',
             'UpdateFields'
         ];
-
+        //Initialize action items.
+            var items = [
+            {
+              text: 'Preview',
+              id:'preview'
+            },
+            {
+              text: 'Merge document',
+              id:'Merge'
+            }];
+          
         container.toolbarClick = function (args) {
+		if( drpDownBtn == null ||  drpDownBtn == undefined){
+		 drpDownBtn= new ej.splitbuttons.DropDownButton({items: items,select:onSelectMergeItems});
+
+            // Render initialized DropDownButton.
+            drpDownBtn.appendTo('#MergeDocument');
+		}
             switch (args.item.id) {
-                case 'MergeDocument':
-                    mergeDocument();
-                    break;
+                //case 'MergeDocument':
+                //    mergeDocument();
+                //    break;
                 case 'InsertField':
                     showInsertFielddialog();
                     break;
@@ -221,6 +241,19 @@
         titleBarDiv = document.getElementById('documenteditor_titlebar');
         initComponentAndWireEvent();
         container.resize();
+		debugger;
+           
+            function onSelectMergeItems(args){
+    switch (args.item.id) {
+                case 'Merge':
+                    mergeDocument();
+                    break;
+                case 'preview':
+                    document.getElementById('mailmergeDiv').style.display='block';
+					document.getElementById('mailmergeDiv').style.display='inline-flex';
+                    break;
+            }
+            }
         container.documentChange = function () {
             updateDocumentTitle();
             //Shows the list of fields, while displaying the template.
@@ -349,6 +382,8 @@
             content += '<div class="e-de-text-wrap">' + text.slice(index) + '</div>';
             return content;
         }
+		
+		 
 
     });
 </script>
