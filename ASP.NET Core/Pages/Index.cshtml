@@ -16,8 +16,8 @@
         </div>
         <div class="col-lg-10 control-section" style="width:78%;">
             <div>
-                <ejs-documenteditorcontainer id="container" created="onCreated" height="780px">
-                </ejs-documenteditorcontainer>
+                <div id="container" height="780px">
+                </div>
             </div>
         </div>
     </div>
@@ -55,8 +55,8 @@
         }, 100);
         //Adds event listener for browser window resize event.
         window.addEventListener('resize', onWindowResize);
-		
-		
+
+
     }
     function onWindowResize() {
         //Resizes the document editor component to fit full browser window automatically whenever the browser resized.
@@ -151,6 +151,63 @@
         container.documentEditor.focusIn();
     }
     document.addEventListener('DOMContentLoaded', function () {
+        // Initialize DocumentEditorContainer component.
+        var container = new ej.documenteditor.DocumentEditorContainer({
+            enableToolbar: true, created: onCreated, toolbarItems :['New', 'Open', 'Separator', 'Undo',
+                'Redo',
+                'Separator',
+                {
+                    prefixIcon: "sf-icon-InsertMergeField",
+                    tooltipText: "Insert Field",
+                    text: onWrapText("Insert Field"),
+                    id: "InsertField"
+                },
+                {
+                    prefixIcon: "sf-icon-FinishMerge",
+                    tooltipText: "Merge Document",
+                    cssClass:'e-caret-hide',
+                    text: onWrapText("Merge Document"),
+                    id: "MergeDocument"
+                },
+                'Separator',
+                'Image',
+                'Table',
+                'Hyperlink',
+                'Bookmark',
+                'TableOfContents',
+                'Separator',
+                'Header',
+                'Footer',
+                'PageSetup',
+                'PageNumber',
+                'Break',
+                'Separator',
+                'Find',
+                'Separator',
+                'Comments',
+                'TrackChanges',
+                'Separator',
+                'LocalClipboard',
+                'RestrictEditing',
+                'Separator',
+                'FormFields',
+                'UpdateFields'
+            ], height: '590px' });
+        ej.documenteditor.DocumentEditorContainer.Inject(ej.documenteditor.Toolbar);
+
+        //DocumentEditorContainer control rendering starts
+        container.appendTo('#container');
+        container.toolbarClick = function (args) {
+
+            switch (args.item.id) {
+                //case 'MergeDocument':
+                //    mergeDocument();
+                //    break;
+                case 'InsertField':
+                    showInsertFielddialog();
+                    break;
+            }
+        };
         var listview;
         var ajax1 = new ej.base.Ajax("@Url.Content("~/scripts/Data/Employees.json")", 'GET', true);
         ajax1.send().then();
@@ -160,47 +217,7 @@
 
         dialogBox = document.getElementById("dialog").ej2_instances[0];
         var documenteditorElement = document.getElementById("container");
-        var container = documenteditorElement.ej2_instances[0];
-		debugger;
-        container.toolbarItems = ['New', 'Open', 'Separator', 'Undo',
-            'Redo',
-            'Separator',
-            {
-                prefixIcon: "sf-icon-InsertMergeField",
-                tooltipText: "Insert Field",
-                text: onWrapText("Insert Field"),
-                id: "InsertField"
-            },
-            {
-                prefixIcon: "sf-icon-FinishMerge",
-                tooltipText: "Insert Field",
-                text: onWrapText("Merge Document"),
-                id: "MergeDocument"
-            },
-            'Separator',
-            'Image',
-            'Table',
-            'Hyperlink',
-            'Bookmark',
-            'TableOfContents',
-            'Separator',
-            'Header',
-            'Footer',
-            'PageSetup',
-            'PageNumber',
-            'Break',
-            'Separator',
-            'Find',
-            'Separator',
-            'Comments',
-            'TrackChanges',
-            'Separator',
-            'LocalClipboard',
-            'RestrictEditing',
-            'Separator',
-            'FormFields',
-            'UpdateFields'
-        ];
+
         //Initialize action items.
             var items = [
             {
@@ -211,23 +228,25 @@
               text: 'Merge document',
               id:'Merge'
             }];
-          
-        container.toolbarClick = function (args) {
-		if( drpDownBtn == null ||  drpDownBtn == undefined){
-		 drpDownBtn= new ej.splitbuttons.DropDownButton({items: items,select:onSelectMergeItems});
+        if (drpDownBtn == null || drpDownBtn == undefined) {
+            drpDownBtn = new ej.splitbuttons.DropDownButton({ items: items, cssClass: 'e-caret-hide', select: onSelectMergeItems });
 
             // Render initialized DropDownButton.
             drpDownBtn.appendTo('#MergeDocument');
-		}
+        }
+
+        function onSelectMergeItems(args) {
             switch (args.item.id) {
-                //case 'MergeDocument':
-                //    mergeDocument();
-                //    break;
-                case 'InsertField':
-                    showInsertFielddialog();
+                case 'Merge':
+                    mergeDocument();
+                    break;
+                case 'preview':
+                    document.getElementById('mailmergeDiv').style.display = 'block';
+                    document.getElementById('mailmergeDiv').style.display = 'inline-flex';
                     break;
             }
-        };
+        }
+
         documenteditor = container.documentEditor;
         documenteditorElement.ej2_instances[0].serviceUrl = 'api/documenteditor/';
         documenteditor.serviceUrl = 'api/documenteditor/';
@@ -241,24 +260,14 @@
         titleBarDiv = document.getElementById('documenteditor_titlebar');
         initComponentAndWireEvent();
         container.resize();
-		debugger;
-           
-            function onSelectMergeItems(args){
-    switch (args.item.id) {
-                case 'Merge':
-                    mergeDocument();
-                    break;
-                case 'preview':
-                    document.getElementById('mailmergeDiv').style.display='block';
-					document.getElementById('mailmergeDiv').style.display='inline-flex';
-                    break;
-            }
-            }
+
         container.documentChange = function () {
             updateDocumentTitle();
             //Shows the list of fields, while displaying the template.
             const fldDiv = document.getElementById('fieldDiv');
             fldDiv.style.display = '';
+
+
             documenteditor.focusIn();
         };
 
@@ -382,8 +391,8 @@
             content += '<div class="e-de-text-wrap">' + text.slice(index) + '</div>';
             return content;
         }
-		
-		 
+
+
 
     });
 </script>
