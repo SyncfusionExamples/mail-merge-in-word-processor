@@ -44,8 +44,15 @@
     var listview;
     var dialogBox;
     var jsonDataSource;
+    let tempListData = [];
+    let sfdtFiles = [];
+    var recordCount = 1;
+    var currentRecordId = 0;
+    var isMergePreview = false;
+    var isOpenInternal = false;
+    var mergeTemplateDocxBlob = null;
     var container;
-	 var drpDownBtn;
+    var drpDownBtn;
     function onCreated() {
         var documenteditorElement = document.getElementById("container");
         container = documenteditorElement.ej2_instances[0];
@@ -55,8 +62,6 @@
         }, 100);
         //Adds event listener for browser window resize event.
         window.addEventListener('resize', onWindowResize);
-
-
     }
     function onWindowResize() {
         //Resizes the document editor component to fit full browser window automatically whenever the browser resized.
@@ -87,6 +92,9 @@
     }
     function parseChildItems(childItems, tempListData, listData) {
         if (Array.isArray(childItems)) {
+            if (recordCount == -1) {
+                recordCount = childItems.length;
+            }
             for (let i = 0; i < childItems.length; i++) {
                 parseObject(childItems[i], tempListData, listData);
             }
@@ -101,6 +109,9 @@
             var keyToAdd = key;
             if (valueType === "object") {
                 keyToAdd = "TableStart:" + key;
+                if (tempListData.length == 0) {
+                    recordCount = -1;
+                }
             }
             if (tempListData.indexOf(keyToAdd) == -1) {
                 tempListData.push(keyToAdd);
@@ -127,7 +138,8 @@
     function loadJSON(data) {
         let jsonData = JSON.parse(data);
         let listData = [];
-        let tempListData = [];
+        tempListData = [];
+        recordCount = 1;
         jsonDataSource = jsonData;
         parseChildItems(jsonData, tempListData, listData);
         var listview = new ej.lists.ListView({
@@ -137,10 +149,48 @@
             select: onselect
         });
         //Clears the old content from the div, before updating with new field names.
-        const container = document.getElementById('listview');
-        container.replaceChildren();
+        document.getElementById('listview').replaceChildren();
         //Render initialized ListView
         listview.appendTo("#listview");
+    }
+    function showFieldList() {
+        document.getElementById('fieldDiv').style.display = '';
+        enableMergeOption();
+    }
+    function hideFieldList() {
+        document.getElementById('fieldDiv').style.display = 'none';
+        disableMergedOption();
+    }
+    function enableMergeOption() {
+        container.toolbar.enableItems(7, true);
+        //container.toolbar.enableItems(7, true);
+    }
+    function disableMergedOption() {
+        container.toolbar.enableItems(7, false);
+        //container.toolbar.enableItems(7, false)
+    }
+    function showMergePreviewOption() {
+        isMergePreview = true;
+        var mailmergeDiv = document.getElementById('mailmergeDiv');
+        if (mailmergeDiv != null) {
+            mailmergeDiv.style.display = 'inline-flex';
+        }
+    }
+    function hideMergePreviewOption() {
+        isMergePreview = false;
+        var mailmergeDiv = document.getElementById('mailmergeDiv');
+        if (mailmergeDiv != null) {
+            mailmergeDiv.style.display = 'none';
+        }
+    }
+    function previewCurrentRecord() {
+        if (sfdtFiles != null && sfdtFiles.length > 0 && currentRecordId < sfdtFiles.length) {
+            isOpenInternal = true;
+            documenteditor.open(sfdtFiles[currentRecordId]);
+            isOpenInternal = false;
+            //Hides the list of fields, while displaying the final report.
+            hideFieldList();
+        }
     }
     function onselect(args) {
         var fieldName = args.text;
@@ -219,14 +269,14 @@
         var documenteditorElement = document.getElementById("container");
 
         //Initialize action items.
-            var items = [
+        var items = [
             {
-              text: 'Preview',
-              id:'preview'
+                text: 'Preview',
+                id: 'preview'
             },
             {
-              text: 'Merge document',
-              id:'Merge'
+                text: 'Merge document',
+                id: 'Merge'
             }];
         if (drpDownBtn == null || drpDownBtn == undefined) {
             drpDownBtn = new ej.splitbuttons.DropDownButton({ items: items, cssClass: 'e-caret-hide', select: onSelectMergeItems });
@@ -237,13 +287,18 @@
 
         function onSelectMergeItems(args) {
             switch (args.item.id) {
-                case 'Merge':
-                    mergeDocument();
-                    break;
                 case 'preview':
-                    document.getElementById('mailmergeDiv').style.display = 'block';
-                    document.getElementById('mailmergeDiv').style.display = 'inline-flex';
+                    showMergePreviewOption();
                     break;
+            }
+            if (mergeTemplateDocxBlob == null) {
+                documenteditor.saveAsBlob('Docx').then(function (exportedDocument) {
+                    mergeTemplateDocxBlob = exportedDocument;
+                    mergeDocument(mergeTemplateDocxBlob);
+                });
+            }
+            else {
+                mergeDocument(mergeTemplateDocxBlob);
             }
         }
 
@@ -263,11 +318,12 @@
 
         container.documentChange = function () {
             updateDocumentTitle();
-            //Shows the list of fields, while displaying the template.
-            const fldDiv = document.getElementById('fieldDiv');
-            fldDiv.style.display = '';
-
-
+            if (isOpenInternal == false) {
+                //Shows the list of fields, while displaying the template.
+                showFieldList();
+                hideMergePreviewOption();
+                mergeTemplateDocxBlob = null;
+            }
             documenteditor.focusIn();
         };
 
@@ -298,9 +354,6 @@
             }
         });
 
-
-
-
         function showInsertFielddialog() {
             dialogBox.show();
         }
@@ -325,56 +378,72 @@
             var dialogBox = document.getElementById("dialog").ej2_instances[0];
             dialogBox.hide();
         };
-        function mergeDocument() {
-            documenteditor.saveAsBlob("Docx").then(function (blob) {
-                var jsonObject = {};
-                jsonObject.MergeSettings = [];
-                var mergeSetting = {};
-                mergeSetting.ClearFields = true;
-                mergeSetting.RemoveEmptyParagraphs = false;
-                mergeSetting.RemoveEmptyGroup = false;
-                mergeSetting.InsertAsNewRow = false;
-                mergeSetting.StartAtNewPage = true;
-                mergeSetting.MergeType = "NestedGroup";
-                mergeSetting.MergeCommand = "Employees";
-                mergeSetting.DataSource = jsonDataSource;
-                jsonObject.MergeSettings.push(mergeSetting);
-                var dataForMerge = JSON.stringify(jsonObject);
-                var fileReader = new FileReader();
-                fileReader.onload = function () {
-                    var base64String = fileReader.result;
-                    var data = {
-                        fileName: documenteditor.documentName + '.docx',
-                        documentData: base64String,
-                        mergeData: dataForMerge
-                    }
-                    showHideWaitingIndicator(true)
-                    var httpRequest = new XMLHttpRequest();
-                    httpRequest.open('Post', 'api/DocumentEditor/MailMergeReport', true);
-                    httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                    httpRequest.onreadystatechange = function () {
-                        if (httpRequest.readyState === 4) {
-                            if (httpRequest.status === 200 || httpRequest.status === 304) {
-                                documenteditor.open(httpRequest.responseText);
-                                //Hides the list of fields, while displaying the final report.
-                                const container = document.getElementById('fieldDiv');
-                                container.style.display = 'none';
-                            } else {
-                                // Failed to merge document
-                                ejs.popups.DialogUtility.alert({
-                                    title: 'Information',
-                                    content: 'Failed to merge document.',
-                                    showCloseIcon: true,
-                                    closeOnEscape: true,
-                                });
-                            }
-                            showHideWaitingIndicator(false);
-                        }
-                    };
-                    httpRequest.send(JSON.stringify(data));
+        function mergeDocument(blob) {
+            var jsonObject = {};
+            jsonObject.MergeSettings = [];
+            var mergeSetting = {};
+            mergeSetting.ClearFields = true;
+            mergeSetting.RemoveEmptyParagraphs = false;
+            mergeSetting.RemoveEmptyGroup = false;
+            mergeSetting.InsertAsNewRow = false;
+            mergeSetting.StartNextRecordAtNewPage = true;
+            mergeSetting.MergeType = "NestedGroup";
+            mergeSetting.MergeCommand = "Employees";
+            var recordCnt = "";
+            if (isMergePreview) {
+                recordCnt = recordCount.toString();
+                //if (checkBox.checked == true) {
+                    mergeSetting.RecordId = '-1';
+                //}
+                //else {
+                //    mergeSetting.RecordId = currentRecordId.toString();
+                //}
+            }
+            mergeSetting.DataSource = jsonDataSource;
+            jsonObject.MergeSettings.push(mergeSetting);
+            var dataForMerge = JSON.stringify(jsonObject);
+            var fileReader = new FileReader();
+            fileReader.onload = function () {
+                var base64String = fileReader.result;
+                var data = {
+                    fileName: documenteditor.documentName + '.docx',
+                    documentData: base64String,
+                    mergeData: dataForMerge,
+                    recordCount: recordCnt
                 }
-                fileReader.readAsDataURL(blob);
-            });
+                showHideWaitingIndicator(true)
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.open('Post', 'api/DocumentEditor/MailMergeReport', true);
+                httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                httpRequest.onreadystatechange = function () {
+                    if (httpRequest.readyState === 4) {
+                        if (httpRequest.status === 200 || httpRequest.status === 304) {
+                            if (isMergePreview) {
+                                sfdtFiles = JSON.parse(httpRequest.responseText);
+                                previewCurrentRecord();
+                            }
+                            else {
+                                isOpenInternal = true;
+                                documenteditor.open(httpRequest.responseText);
+                                isOpenInternal = false;
+                                //Hides the list of fields, while displaying the final report.
+                                hideFieldList();
+                            }
+                        } else {
+                            // Failed to merge document
+                            ejs.popups.DialogUtility.alert({
+                                title: 'Information',
+                                content: 'Failed to merge document.',
+                                showCloseIcon: true,
+                                closeOnEscape: true,
+                            });
+                        }
+                        showHideWaitingIndicator(false);
+                    }
+                };
+                httpRequest.send(JSON.stringify(data));
+            };
+            fileReader.readAsDataURL(blob);
         }
 
 
@@ -391,8 +460,6 @@
             content += '<div class="e-de-text-wrap">' + text.slice(index) + '</div>';
             return content;
         }
-
-
 
     });
 </script>

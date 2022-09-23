@@ -31,8 +31,8 @@ namespace MailMergeExample
                     wordDocument.MailMerge.InsertAsNewRow = bool.Parse(items["InsertAsNewRow"].ToString());
                 else
                     wordDocument.MailMerge.InsertAsNewRow = false;
-                if (items.ContainsKey("StartAtNewPage"))
-                    wordDocument.MailMerge.StartAtNewPage = bool.Parse(items["StartAtNewPage"].ToString());
+                if (items.ContainsKey("StartNextRecordAtNewPage"))
+                    wordDocument.MailMerge.StartAtNewPage = bool.Parse(items["StartNextRecordAtNewPage"].ToString());
                 else
                     wordDocument.MailMerge.StartAtNewPage = false;
                 if (items.ContainsKey("MergeType"))
@@ -96,13 +96,31 @@ namespace MailMergeExample
                 JObject jsonObject = JObject.Parse(items["DataSource"].ToString());
                 // Converts to IDictionary data from JSON object.
                 IDictionary<string, object> dataSource = GetData(jsonObject);
-                List<object> dataCollection;
                 if (dataSource is IDictionary<string, object> && dataSource.ContainsKey(tableName))
                 {
-                    dataCollection = dataSource[tableName] as List<object>;
-                    MailMergeDataTable dataTable = new MailMergeDataTable(tableName, dataCollection);
-                    //Executes Mail merge for nested group.
-                    wordDocument.MailMerge.ExecuteNestedGroup(dataTable);
+                    List<object> dataCollection = dataSource[tableName] as List<object>;
+                    if (items.ContainsKey("RecordId"))
+                    {
+                        int recordId = int.Parse(items["RecordId"].ToString());
+                        for (int i = 0; i < dataCollection.Count - 1; i++)
+                        {
+                            if (recordId == i)
+                            {
+                                List<object> tempDataCollection = new List<object>();
+                                tempDataCollection.Add(dataCollection[i]);
+                                MailMergeDataTable dataTable = new MailMergeDataTable(tableName, tempDataCollection);
+                                //Executes Mail merge for nested group.
+                                wordDocument.MailMerge.ExecuteNestedGroup(dataTable);
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MailMergeDataTable dataTable = new MailMergeDataTable(tableName, dataCollection);
+                        //Executes Mail merge for nested group.
+                        wordDocument.MailMerge.ExecuteNestedGroup(dataTable);
+                    }
                 }
             }
         }

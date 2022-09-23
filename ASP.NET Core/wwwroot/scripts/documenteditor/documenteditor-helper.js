@@ -50,6 +50,10 @@ var titleBarDiv;
 var print;
 var openBtn;
 var download;
+var previousBtn;
+var nextBtn;
+var checkBox;
+var innerDiv;
 var isPropertiesPaneEnabled;
 function initializeTitleBar(isShareNeeded, isRtl) {
     if (!isRtl) {
@@ -98,29 +102,31 @@ function initializeTitleBar(isShareNeeded, isRtl) {
     }
 	var divMarginStyle = 'margin:5px';
 	var mailmergeDivStyle = 'float:right;display:inline-flex;display:none';
-var mailmergeDiv=ej.base.createElement('div', { id: 'mailmergeDiv', styles:mailmergeDivStyle});
+    var mailmergeDiv=ej.base.createElement('div', { id: 'mailmergeDiv', styles:mailmergeDivStyle});
 
 	titleBarDiv.appendChild(mailmergeDiv);
-	var previousBtn=ej.base.createElement('button', { id: 'previousBtn'});
+	previousBtn=ej.base.createElement('button', { id: 'previousBtn'});
 	previousBtn.innerHTML='&laquo;';
 	mailmergeDiv.appendChild(previousBtn);
-	var innerDiv=ej.base.createElement('div', { id: 'innerDiv',styles: divMarginStyle});
-	innerDiv.innerText='Recipient1';
+    innerDiv = ej.base.createElement('div', { id: 'innerDiv', styles: divMarginStyle });
+    innerDiv.innerText = 'Record ' + (currentRecordId + 1).toString();
 	mailmergeDiv.appendChild(innerDiv);
-	var nextBtn=ej.base.createElement('button', { id: 'nextBtn'});
+	nextBtn=ej.base.createElement('button', { id: 'nextBtn'});
 	nextBtn.innerHTML='&raquo;';
 	mailmergeDiv.appendChild(nextBtn);
-	var checkBox=ej.base.createElement('input', { id: 'checkBox',type:'checkbox'});
+	checkBox=ej.base.createElement('input', { id: 'checkBox',type:'checkbox'});
 	checkBox.type = "checkbox";
-checkBox.name = "name";
+    checkBox.name = "name";
 	mailmergeDiv.appendChild(checkBox);
 	var checkBoxDiv=ej.base.createElement('div', { id: 'checkBoxDiv',styles: divMarginStyle});
-	checkBoxDiv.innerText='Download for all recipients';
+	checkBoxDiv.innerText='Download for all records';
 		
 	mailmergeDiv.appendChild(checkBoxDiv);
 }
 function wireEventsInTitleBar() {
     print.element.addEventListener('click', onPrint);
+    previousBtn.addEventListener('click', onPreviousBtn);
+    nextBtn.addEventListener('click', onNextBtn);
     openBtn.element.addEventListener('click', function (e) {
         if (e.target.id === 'de-open') {
             var fileUpload = document.getElementById('uploadfileButton');
@@ -158,6 +164,20 @@ function updateDocumentTitle() {
         documenteditor.documentName = 'Untitled';
     }
     documentTitle.textContent = documenteditor.documentName;
+}
+function onPreviousBtn() {
+    if (currentRecordId > 0) {
+        currentRecordId--;
+        innerDiv.innerText = 'Record ' + (currentRecordId + 1).toString();
+        previewCurrentRecord();
+    }
+}
+function onNextBtn() {
+    if (currentRecordId < recordCount - 1) {
+        currentRecordId++;
+        innerDiv.innerText = 'Record ' + (currentRecordId + 1).toString();
+        previewCurrentRecord();
+    }
 }
 function onPrint() {
     var documentContainer = document.getElementById("container").ej2_instances[0];
