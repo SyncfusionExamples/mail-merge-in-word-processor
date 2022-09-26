@@ -114,18 +114,18 @@ function initializeTitleBar(isShareNeeded, isRtl) {
     nextBtn = ej.base.createElement('button', { id: 'nextBtn' });
     nextBtn.innerHTML = '&raquo;';
     mailmergeDiv.appendChild(nextBtn);
+    var exitBtn = ej.base.createElement('button', { id: 'exitBtn' });
+    exitBtn.innerHTML = 'Exit preview';
+    exitBtn.setAttribute('title', 'Exit the Mail merge preview window.');
+    mailmergeDiv.appendChild(exitBtn);
     checkBox = ej.base.createElement('input', { id: 'checkBox', type: 'checkbox' });
     checkBox.type = "checkbox";
     checkBox.name = "name";
     mailmergeDiv.appendChild(checkBox);
     var checkBoxDiv = ej.base.createElement('div', { id: 'checkBoxDiv', styles: divMarginStyle });
-    checkBoxDiv.innerText = 'Download as individual file';
-    checkBoxDiv.setAttribute('title', 'Download as individual file for all records.');
+    checkBoxDiv.innerText = 'Download as individual files';
+    checkBoxDiv.setAttribute('title', 'Download as individual files for all records.');
     mailmergeDiv.appendChild(checkBoxDiv);
-    var exitBtn = ej.base.createElement('button', { id: 'exitBtn' });
-    exitBtn.innerHTML = 'Exit preview';
-    exitBtn.setAttribute('title', 'Exit Mail merge preview window.');
-    mailmergeDiv.appendChild(exitBtn);
 }
 function wireEventsInTitleBar() {
     print.element.addEventListener('click', onPrint);
