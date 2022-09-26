@@ -102,7 +102,7 @@ namespace MailMergeExample
                     if (items.ContainsKey("RecordId"))
                     {
                         int recordId = int.Parse(items["RecordId"].ToString());
-                        for (int i = 0; i < dataCollection.Count - 1; i++)
+                        for (int i = 0; i < dataCollection.Count; i++)
                         {
                             if (recordId == i)
                             {

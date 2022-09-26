@@ -178,6 +178,7 @@
     }
     function hideMergePreviewOption() {
         isMergePreview = false;
+        currentRecordId = 0;
         var mailmergeDiv = document.getElementById('mailmergeDiv');
         if (mailmergeDiv != null) {
             mailmergeDiv.style.display = 'none';
@@ -200,10 +201,14 @@
         dialogBox.hide();
         container.documentEditor.focusIn();
     }
+    function showHideWaitingIndicator(show) {
+        document.getElementById("popup-overlay").style.display = show ? 'block' : 'none';
+        document.getElementById("waiting-popup").style.display = show ? 'block' : 'none';
+    }
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize DocumentEditorContainer component.
         var container = new ej.documenteditor.DocumentEditorContainer({
-            enableToolbar: true, created: onCreated, toolbarItems :['New', 'Open', 'Separator', 'Undo',
+            enableToolbar: true, created: onCreated, toolbarItems: ['New', 'Open', 'Separator', 'Undo',
                 'Redo',
                 'Separator',
                 {
@@ -214,9 +219,9 @@
                 },
                 {
                     prefixIcon: "sf-icon-FinishMerge",
-                    tooltipText: "Merge Document",
-                    cssClass:'e-caret-hide',
-                    text: onWrapText("Merge Document"),
+                    tooltipText: "Mail Merge",
+                    cssClass: 'e-caret-hide',
+                    text: onWrapText("Mail Merge"),
                     id: "MergeDocument"
                 },
                 'Separator',
@@ -242,7 +247,8 @@
                 'Separator',
                 'FormFields',
                 'UpdateFields'
-            ], height: '590px' });
+            ], height: '590px'
+        });
         ej.documenteditor.DocumentEditorContainer.Inject(ej.documenteditor.Toolbar);
 
         //DocumentEditorContainer control rendering starts
@@ -250,9 +256,6 @@
         container.toolbarClick = function (args) {
 
             switch (args.item.id) {
-                //case 'MergeDocument':
-                //    mergeDocument();
-                //    break;
                 case 'InsertField':
                     showInsertFielddialog();
                     break;
@@ -271,11 +274,11 @@
         //Initialize action items.
         var items = [
             {
-                text: 'Preview',
+                text: 'Merge Preview',
                 id: 'preview'
             },
             {
-                text: 'Merge document',
+                text: 'Finish Merge',
                 id: 'Merge'
             }];
         if (drpDownBtn == null || drpDownBtn == undefined) {
@@ -294,6 +297,7 @@
             if (mergeTemplateDocxBlob == null) {
                 documenteditor.saveAsBlob('Docx').then(function (exportedDocument) {
                     mergeTemplateDocxBlob = exportedDocument;
+                    mergeTemplateDocxBlob.name = documenteditor.documentName + '.docx';
                     mergeDocument(mergeTemplateDocxBlob);
                 });
             }
@@ -392,12 +396,7 @@
             var recordCnt = "";
             if (isMergePreview) {
                 recordCnt = recordCount.toString();
-                //if (checkBox.checked == true) {
-                    mergeSetting.RecordId = '-1';
-                //}
-                //else {
-                //    mergeSetting.RecordId = currentRecordId.toString();
-                //}
+                mergeSetting.RecordId = '-1';
             }
             mergeSetting.DataSource = jsonDataSource;
             jsonObject.MergeSettings.push(mergeSetting);
@@ -444,12 +443,6 @@
                 httpRequest.send(JSON.stringify(data));
             };
             fileReader.readAsDataURL(blob);
-        }
-
-
-        function showHideWaitingIndicator(show) {
-            document.getElementById("popup-overlay").style.display = show ? 'block' : 'none';
-            document.getElementById("waiting-popup").style.display = show ? 'block' : 'none';
         }
 
         function onWrapText(text) {

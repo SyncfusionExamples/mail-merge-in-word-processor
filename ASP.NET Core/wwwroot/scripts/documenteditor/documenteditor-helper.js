@@ -100,33 +100,38 @@ function initializeTitleBar(isShareNeeded, isRtl) {
     else {
         openBtn.element.style.display = 'none';
     }
-	var divMarginStyle = 'margin:5px';
-	var mailmergeDivStyle = 'float:right;display:inline-flex;display:none';
-    var mailmergeDiv=ej.base.createElement('div', { id: 'mailmergeDiv', styles:mailmergeDivStyle});
+    var divMarginStyle = 'margin:5px';
+    var mailmergeDivStyle = 'float:right;display:inline-flex;display:none';
+    var mailmergeDiv = ej.base.createElement('div', { id: 'mailmergeDiv', styles: mailmergeDivStyle });
 
-	titleBarDiv.appendChild(mailmergeDiv);
-	previousBtn=ej.base.createElement('button', { id: 'previousBtn'});
-	previousBtn.innerHTML='&laquo;';
-	mailmergeDiv.appendChild(previousBtn);
+    titleBarDiv.appendChild(mailmergeDiv);
+    previousBtn = ej.base.createElement('button', { id: 'previousBtn' });
+    previousBtn.innerHTML = '&laquo;';
+    mailmergeDiv.appendChild(previousBtn);
     innerDiv = ej.base.createElement('div', { id: 'innerDiv', styles: divMarginStyle });
     innerDiv.innerText = 'Record ' + (currentRecordId + 1).toString();
-	mailmergeDiv.appendChild(innerDiv);
-	nextBtn=ej.base.createElement('button', { id: 'nextBtn'});
-	nextBtn.innerHTML='&raquo;';
-	mailmergeDiv.appendChild(nextBtn);
-	checkBox=ej.base.createElement('input', { id: 'checkBox',type:'checkbox'});
-	checkBox.type = "checkbox";
+    mailmergeDiv.appendChild(innerDiv);
+    nextBtn = ej.base.createElement('button', { id: 'nextBtn' });
+    nextBtn.innerHTML = '&raquo;';
+    mailmergeDiv.appendChild(nextBtn);
+    checkBox = ej.base.createElement('input', { id: 'checkBox', type: 'checkbox' });
+    checkBox.type = "checkbox";
     checkBox.name = "name";
-	mailmergeDiv.appendChild(checkBox);
-	var checkBoxDiv=ej.base.createElement('div', { id: 'checkBoxDiv',styles: divMarginStyle});
-	checkBoxDiv.innerText='Download for all records';
-		
-	mailmergeDiv.appendChild(checkBoxDiv);
+    mailmergeDiv.appendChild(checkBox);
+    var checkBoxDiv = ej.base.createElement('div', { id: 'checkBoxDiv', styles: divMarginStyle });
+    checkBoxDiv.innerText = 'Download as individual file';
+    checkBoxDiv.setAttribute('title', 'Download as individual file for all records.');
+    mailmergeDiv.appendChild(checkBoxDiv);
+    var exitBtn = ej.base.createElement('button', { id: 'exitBtn' });
+    exitBtn.innerHTML = 'Exit preview';
+    exitBtn.setAttribute('title', 'Exit Mail merge preview window.');
+    mailmergeDiv.appendChild(exitBtn);
 }
 function wireEventsInTitleBar() {
     print.element.addEventListener('click', onPrint);
     previousBtn.addEventListener('click', onPreviousBtn);
     nextBtn.addEventListener('click', onNextBtn);
+    exitBtn.addEventListener('click', onExitBtn);
     openBtn.element.addEventListener('click', function (e) {
         if (e.target.id === 'de-open') {
             var fileUpload = document.getElementById('uploadfileButton');
@@ -179,6 +184,27 @@ function onNextBtn() {
         previewCurrentRecord();
     }
 }
+function onExitBtn() {
+    showHideWaitingIndicator(true)
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.open('Post', 'api/DocumentEditor/Import', true);
+    httpRequest.onreadystatechange = function () {
+        if (httpRequest.readyState === 4) {
+            if (httpRequest.status === 200 || httpRequest.status === 304) {
+                isOpenInternal = true;
+                documenteditor.open(httpRequest.responseText);
+                isOpenInternal = false;
+                mergeTemplateDocxBlob = null;
+            }
+        }
+        showHideWaitingIndicator(false);
+    };
+    var formData = new FormData();
+    formData.append('files', mergeTemplateDocxBlob, mergeTemplateDocxBlob.name);
+    httpRequest.send(formData);
+    showFieldList();
+    hideMergePreviewOption();
+}
 function onPrint() {
     var documentContainer = document.getElementById("container").ej2_instances[0];
     if (documentContainer.documentEditor !== undefined) {
@@ -200,7 +226,20 @@ function onExportClick(args) {
 }
 function save(format) {
     var editor = document.getElementById("container").ej2_instances[0].documentEditor;
-    editor.save(editor.documentName === '' ? 'sample' : editor.documentName, format);
+    if (isMergePreview && checkBox.checked == true) {
+        var oldValue = currentRecordId;
+        currentRecordId = 0;
+        for (let i = 0; i < recordCount; i++) {
+            previewCurrentRecord();
+            editor.save((editor.documentName === '' ? 'sample' : editor.documentName) + '_Record_' + (currentRecordId + 1).toString(), format);
+            currentRecordId++;
+        }
+        currentRecordId = oldValue;
+        previewCurrentRecord();
+    }
+    else {
+        editor.save((editor.documentName === '' ? 'sample' : editor.documentName) + '_Record_' + (currentRecordId + 1).toString(), format);
+    }
 }
 function setTooltipForPopup() {
     document.getElementById('documenteditor-share-popup').querySelectorAll('li')[0].setAttribute('title', 'Download a copy of this document to your computer as a DOCX file.');

@@ -35,7 +35,6 @@ namespace MailMergeExample
         [Route("Import")]
         public string Import(IFormCollection data)
         {
-
             Stream stream = new MemoryStream();
             string type = "docx";
             if (data.Files.Count == 0)
