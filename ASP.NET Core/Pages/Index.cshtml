@@ -178,6 +178,8 @@
     function hideMergePreviewOption() {
         isMergePreview = false;
         currentRecordId = 0;
+        //Clears the SFDT files from cache.
+        sessionStorage.setItem("sfdtFiles", "");
         var mailmergeDiv = document.getElementById('mailmergeDiv');
         if (mailmergeDiv != null) {
             mailmergeDiv.style.display = 'none';
