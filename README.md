@@ -23,11 +23,11 @@ container.documentEditor.editor.insertField('MERGEFIELD ' + fieldName + ' \\* ME
 
 ### Perform Mail Merge
 
-In this demo, you can preview the mail merge records, merge the records with the document and view it in Document editor.
+In this demo, you can preview the mail merge results (View the merged the document) in Document editor.
 
 #### Preview Results
 
-In toolbar, by choosing the **Preview Results** options in **Mail Merge** dropdown, you can preview the current template document with records. By clicking this options, following options will show in title bar.
+In toolbar, by choosing the **Preview Results** options in **Mail Merge** dropdown, you can preview the result document. By clicking this options, the following options will show in title bar.
 
 ![image](preview.png)
 
@@ -36,13 +36,13 @@ In toolbar, by choosing the **Preview Results** options in **Mail Merge** dropdo
 
 #### Merge & Finish
 
-In toolbar, by choosing the **Merge & Finish** options in **Mail Merge** dropdown, you can perform the mail merge with all records and view it in Document editor.
+In toolbar, by choosing the **Merge & Finish** options in **Mail Merge** dropdown, you can generate report as single document for all records with page inserted after each record. Then the generated document is viewed in Document editor.
 
 The following process takes place:
 * Document editor export the current document as base64string using saveAsBlob API.
 * Then send the base64string to server for performing mail merge. 
-* In server side(MailMergeReport API in DocumentEditorController file), with the help of [`Syncfusion DocIO`](https://help.syncfusion.com/file-formats/docio/working-with-mail-merge), Document editor performing mail merge.
-* Finally, send the SFDT content to client side for opening it in Document editor. Using open method, Document editor the return SFDT content.
+* In server side(MailMergeReport API in DocumentEditorController file), with the help of [`Syncfusion DocIO`](https://help.syncfusion.com/file-formats/docio/working-with-mail-merge) performs mail merge.
+* Finally, send the SFDT content to client side for opening it in Document editor.
 
 The following code snippet is used to perform mail merge.
 
