@@ -45,7 +45,6 @@
     var dialogBox;
     var jsonDataSource;
     let tempListData = [];
-    let sfdtFiles = [];
     var recordCount = 1;
     var currentRecordId = 0;
     var isMergePreview = false;
@@ -185,6 +184,7 @@
         }
     }
     function previewCurrentRecord() {
+        var sfdtFiles=JSON.parse(sessionStorage.getItem("sfdtFiles"));
         if (sfdtFiles != null && sfdtFiles.length > 0 && currentRecordId < sfdtFiles.length) {
             isOpenInternal = true;
             documenteditor.open(sfdtFiles[currentRecordId]);
@@ -383,6 +383,7 @@
             dialogBox.hide();
         };
         function mergeDocument(blob) {
+            let sfdtFiles = [];
             var jsonObject = {};
             jsonObject.MergeSettings = [];
             var mergeSetting = {};
@@ -419,6 +420,7 @@
                         if (httpRequest.status === 200 || httpRequest.status === 304) {
                             if (isMergePreview) {
                                 sfdtFiles = JSON.parse(httpRequest.responseText);
+                                sessionStorage.setItem("sfdtFiles", JSON.stringify(sfdtFiles));                                
                                 previewCurrentRecord();
                             }
                             else {
