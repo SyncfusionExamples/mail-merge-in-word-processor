@@ -1,0 +1,28 @@
+<div class="control-section" id="target">
+    <div id='default_title_bar' class="e-de-ctn-title"></div>
+    
+       <div style="display: inline-flex;">
+    <div class="col-lg-2 property-section" id='fieldDiv' style="width:18%;border-left: 1px solid rgb(238, 238, 238);border-bottom:  1px solid rgb(238, 238, 238) ;height:700px;overflow:auto"> 
+        <input type="file" id="uploadJsonButton" style="position:fixed;" excludeAcceptAllOption="True"
+        accept=".json" (onchange)="onLoadJSON(this)" />
+        <h5><label style="display:block;margin:1px;padding-top: 5px">Select Field to Insert</label></h5>
+        <div >
+          <ejs-listview id='listview' [dataSource]='listData' (select)="onSelect($event)" allowDragAndDrop='true' [fields]="fields"></ejs-listview>
+        </div></div>
+    
+       
+        <div class="col-lg-10 control-section"  style='padding-left: 0px;padding-right: 0px; padding-top: 0px;width:78%;' >
+          <div>
+            <ejs-documenteditorcontainer #documenteditor_ref id="container" [serviceUrl]='serviceLink' [toolbarItems]="item" [enableToolbar]=true (created)="onCreate()"  (documentChange)="onDocumentChange()" (toolbarClick)="toolbarClick($event)" height="780px" style="display:block" ></ejs-documenteditorcontainer>
+          </div>
+        </div>
+
+          <div class="overlay" id="popup-overlay" style="display: none;"></div>
+    <div id='waiting-popup' style="display: none;">
+        <svg class="circular" height="40" width="40">
+            <circle class="circle-path" cx="25" cy="25" r="20" fill="none" stroke-width="6" stroke-miterlimit="10" />
+        </svg>
+    </div>
+        
+    </div>
+</div>
