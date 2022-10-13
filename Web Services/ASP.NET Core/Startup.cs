@@ -88,7 +88,6 @@ namespace EJ2APIServices
                 connection = connection.Replace("%CONTENTROOTPATH%", _contentRootPath);
 
             }
-            services.AddEntityFrameworkNpgsql().AddDbContext<EEJ2SERVICEEJ2WEBSERVICESSRCAPP_DATADIAGRAMMDFContext>(options => options.UseNpgsql(connection));
             // Add framework services.
             services.AddMvc();
         }
