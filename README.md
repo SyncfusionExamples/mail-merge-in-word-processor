@@ -1,5 +1,5 @@
 # Mail merge in Word processor
-This demo illustrates how to create template Word document and generate reports like invoice using mail merge in Syncfusion Word processor (a.k.a.) Document editor within your Web application.
+This demo illustrates how to create template Word document and generate reports like invoice using mail merge in Syncfusion&reg; Word processor (a.k.a.) Document editor within your Web application.
 
 ## Demo illustration
 
@@ -41,7 +41,7 @@ In toolbar, by choosing the **Merge & Finish** options in **Mail Merge** dropdow
 The following process takes place:
 * Document editor export the current document as base64string using saveAsBlob API.
 * Then send the base64string to server for performing mail merge. 
-* In server side(MailMergeReport API in DocumentEditorController file), with the help of [`Syncfusion DocIO`](https://help.syncfusion.com/file-formats/docio/working-with-mail-merge) performs mail merge.
+* In server side(MailMergeReport API in DocumentEditorController file), with the help of [`Syncfusion&reg; DocIO`](https://help.syncfusion.com/file-formats/docio/working-with-mail-merge) performs mail merge.
 * Finally, send the SFDT content to client side for opening it in Document editor.
 
 The following code snippet is used to perform mail merge.
