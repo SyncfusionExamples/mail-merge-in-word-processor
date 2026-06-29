@@ -1,5 +1,5 @@
-# Mail merge in Word processor
-This demo illustrates how to create template Word document and generate reports like invoice using mail merge in Syncfusion&reg; Word processor (a.k.a.) Document editor within your Web application.
+# Mail merge in DOCX Editor
+This demo illustrates how to create template Word document and generate reports like invoice using mail merge in Syncfusion&reg; [DOCX Editor](https://www.syncfusion.com/docx-editor-sdk/react-docx-editor?utm_source=github&utm_medium=listing&utm_campaign=github-github-documenteditor-examples) within your Web application.
 
 ## Demo illustration
 
